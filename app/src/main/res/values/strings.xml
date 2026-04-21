@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">StorePilot</string>
+
+    <!-- Auth -->
+    <string name="login">Login</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="demo_hint">Demo: owner/ahmad123, manager/sss123, employee/aaa123</string>
+    <string name="create_owner_account">Create Owner Account</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="enable_demo_mode">Enable Demo Mode (seed sample data)</string>
+    <string name="setup_complete">Account created! Please log in.</string>
+
+    <!-- Errors -->
+    <string name="error_fill_all_fields">Please fill all required fields</string>
+    <string name="error_passwords_no_match">Passwords do not match</string>
+    <string name="error_password_too_short">Password must be at least 6 characters</string>
+    <string name="error_invalid_date">Invalid date format. Use yyyy-MM-dd</string>
+
+    <!-- Navigation -->
+    <string name="nav_dashboard">Dashboard</string>
+    <string name="nav_inventory">Inventory</string>
+    <string name="nav_sales">Sales</string>
+    <string name="nav_tasks">Tasks</string>
+    <string name="nav_more">More</string>
+
+    <!-- Dashboard -->
+    <string name="season_ending_soon">⚠ Season ending soon: %1$s</string>
+    <string name="today_sales">Today\'s Sales</string>
+    <string name="low_stock_items">Low Stock Items</string>
+    <string name="pending_tasks">Pending Tasks</string>
+
+    <!-- Products -->
+    <string name="product_name">Product Name</string>
+    <string name="category">Category</string>
+    <string name="size">Size</string>
+    <string name="color">Color</string>
+    <string name="quantity">Quantity</string>
+    <string name="price">Price ($)</string>
+    <string name="cost_price">Cost Price ($)</string>
+    <string name="save">Save</string>
+    <string name="add_product">Add Product</string>
+    <string name="edit_product">Edit Product</string>
+
+    <!-- Sales -->
+    <string name="add_sale">Add Sale</string>
+    <string name="product_id">Product ID</string>
+    <string name="total_price">Total Price ($)</string>
+    <string name="notes">Notes</string>
+
+    <!-- Purchases -->
+    <string name="add_purchase">Add Purchase</string>
+    <string name="total_cost">Total Cost ($)</string>
+    <string name="supplier">Supplier</string>
+
+    <!-- Tasks -->
+    <string name="add_task">Add Task</string>
+    <string name="task_title">Title</string>
+    <string name="description">Description</string>
+    <string name="assigned_to">Assigned To (User ID)</string>
+    <string name="due_date">Due Date (yyyy-MM-dd)</string>
+    <string name="my_tasks">My Tasks</string>
+    <string name="team_tasks">Team Tasks</string>
+    <string name="private_tasks">Private</string>
+
+    <!-- Seasons -->
+    <string name="add_season">Add Season</string>
+    <string name="season_name">Season Name</string>
+    <string name="start_date">Start Date (yyyy-MM-dd)</string>
+    <string name="end_date">End Date (yyyy-MM-dd)</string>
+    <string name="alert_days">Alert Days Before End</string>
+    <string name="active">Active</string>
+
+    <!-- Reports -->
+    <string name="reports">Reports</string>
+    <string name="sales_total">Sales Total</string>
+    <string name="this_week">This Week</string>
+    <string name="this_month">This Month</string>
+    <string name="this_year">This Year</string>
+
+    <!-- Marketing -->
+    <string name="add_metric">Add Video Metric</string>
+    <string name="video_title">Video Title</string>
+    <string name="platform">Platform</string>
+    <string name="views">Views</string>
+    <string name="likes">Likes</string>
+    <string name="shares">Shares</string>
+    <string name="comments_count">Comments</string>
+
+    <!-- Admin -->
+    <string name="user_management">User Management</string>
+    <string name="logout">Logout</string>
+
+    <!-- Arrays -->
+    <string-array name="task_statuses">
+        <item>TODO</item>
+        <item>IN_PROGRESS</item>
+        <item>DONE</item>
+    </string-array>
+
+    <string-array name="task_priorities">
+        <item>LOW</item>
+        <item>MEDIUM</item>
+        <item>HIGH</item>
+    </string-array>
+</resources>

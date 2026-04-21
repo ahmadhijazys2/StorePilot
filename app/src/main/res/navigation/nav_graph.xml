@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/dashboardFragment">
+
+    <fragment
+        android:id="@+id/dashboardFragment"
+        android:name="com.storepilot.dashboard.DashboardFragment"
+        android:label="Dashboard" />
+
+    <fragment
+        android:id="@+id/productListFragment"
+        android:name="com.storepilot.inventory.ProductListFragment"
+        android:label="Inventory" />
+
+    <fragment
+        android:id="@+id/productDetailsFragment"
+        android:name="com.storepilot.inventory.ProductDetailsFragment"
+        android:label="Product Details">
+        <argument android:name="productId" app:argType="integer" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/salesHistoryFragment"
+        android:name="com.storepilot.sales.SalesHistoryFragment"
+        android:label="Sales History" />
+
+    <fragment
+        android:id="@+id/purchaseHistoryFragment"
+        android:name="com.storepilot.purchases.PurchaseHistoryFragment"
+        android:label="Purchase History" />
+
+    <fragment
+        android:id="@+id/videoMetricsFragment"
+        android:name="com.storepilot.marketing.VideoMetricsFragment"
+        android:label="Video Metrics" />
+
+    <fragment
+        android:id="@+id/reportsFragment"
+        android:name="com.storepilot.reports.ReportsFragment"
+        android:label="Reports" />
+
+    <fragment
+        android:id="@+id/seasonListFragment"
+        android:name="com.storepilot.seasons.SeasonListFragment"
+        android:label="Seasons" />
+
+    <fragment
+        android:id="@+id/taskListFragment"
+        android:name="com.storepilot.tasks.TaskListFragment"
+        android:label="Tasks" />
+
+    <fragment
+        android:id="@+id/userManagementFragment"
+        android:name="com.storepilot.admin.UserManagementFragment"
+        android:label="User Management" />
+
+    <activity
+        android:id="@+id/addEditProductActivity"
+        android:name="com.storepilot.inventory.AddEditProductActivity"
+        android:label="Add/Edit Product" />
+
+    <activity
+        android:id="@+id/addSaleActivity"
+        android:name="com.storepilot.sales.AddSaleActivity"
+        android:label="Add Sale" />
+
+    <activity
+        android:id="@+id/addPurchaseActivity"
+        android:name="com.storepilot.purchases.AddPurchaseActivity"
+        android:label="Add Purchase" />
+
+    <activity
+        android:id="@+id/addMetricActivity"
+        android:name="com.storepilot.marketing.AddMetricActivity"
+        android:label="Add Metric" />
+
+    <activity
+        android:id="@+id/addEditSeasonActivity"
+        android:name="com.storepilot.seasons.AddEditSeasonActivity"
+        android:label="Add/Edit Season" />
+
+    <activity
+        android:id="@+id/addEditTaskActivity"
+        android:name="com.storepilot.tasks.AddEditTaskActivity"
+        android:label="Add/Edit Task" />
+
+</navigation>
