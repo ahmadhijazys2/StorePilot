@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/spacing_medium">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView android:id="@+id/tvDetailName"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:textSize="@dimen/text_size_title" android:textStyle="bold"
+            android:layout_marginBottom="@dimen/spacing_small" />
+
+        <TextView android:id="@+id/tvDetailCategory"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:textSize="@dimen/text_size_body" android:textColor="@color/textSecondary"
+            android:layout_marginBottom="@dimen/spacing_small" />
+
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:layout_marginBottom="@dimen/spacing_small">
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/size" android:textColor="@color/textSecondary" />
+            <TextView android:id="@+id/tvDetailSize"
+                android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:layout_marginBottom="@dimen/spacing_small">
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/color" android:textColor="@color/textSecondary" />
+            <TextView android:id="@+id/tvDetailColor"
+                android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:layout_marginBottom="@dimen/spacing_small">
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/quantity" android:textColor="@color/textSecondary" />
+            <TextView android:id="@+id/tvDetailQuantity"
+                android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:layout_marginBottom="@dimen/spacing_small">
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/price" android:textColor="@color/textSecondary" />
+            <TextView android:id="@+id/tvDetailPrice"
+                android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/cost_price" android:textColor="@color/textSecondary" />
+            <TextView android:id="@+id/tvDetailCostPrice"
+                android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

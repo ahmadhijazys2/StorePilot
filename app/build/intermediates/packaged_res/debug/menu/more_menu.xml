@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/menu_purchases" android:title="Purchases" />
+    <item android:id="@+id/menu_marketing" android:title="Marketing" />
+    <item android:id="@+id/menu_reports" android:title="Reports" />
+    <item android:id="@+id/menu_seasons" android:title="Seasons" />
+    <item android:id="@+id/menu_admin" android:title="Admin" />
+    <item android:id="@+id/menu_logout" android:title="@string/logout" />
+</menu>

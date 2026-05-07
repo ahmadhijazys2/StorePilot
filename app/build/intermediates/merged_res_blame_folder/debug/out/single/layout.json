@@ -1,0 +1,110 @@
+[
+    {
+        "merged": "com.storepilot.app-mergeDebugResources-46:/layout/fragment_product_list.xml",
+        "source": "com.storepilot.app-main-49:/layout/fragment_product_list.xml"
+    },
+    {
+        "merged": "com.storepilot.app-mergeDebugResources-46:/layout/activity_add_edit_season.xml",
+        "source": "com.storepilot.app-main-49:/layout/activity_add_edit_season.xml"
+    },
+    {
+        "merged": "com.storepilot.app-mergeDebugResources-46:/layout/fragment_purchase_history.xml",
+        "source": "com.storepilot.app-main-49:/layout/fragment_purchase_history.xml"
+    },
+    {
+        "merged": "com.storepilot.app-mergeDebugResources-46:/layout/item_season.xml",
+        "source": "com.storepilot.app-main-49:/layout/item_season.xml"
+    },
+    {
+        "merged": "com.storepilot.app-mergeDebugResources-46:/layout/fragment_task_list.xml",
+        "source": "com.storepilot.app-main-49:/layout/fragment_task_list.xml"
+    },
+    {
+        "merged": "com.storepilot.app-mergeDebugResources-46:/layout/activity_add_edit_product.xml",
+        "source": "com.storepilot.app-main-49:/layout/activity_add_edit_product.xml"
+    },
+    {
+        "merged": "com.storepilot.app-mergeDebugResources-46:/layout/activity_add_metric.xml",
+        "source": "com.storepilot.app-main-49:/layout/activity_add_metric.xml"
+    },
+    {
+        "merged": "com.storepilot.app-mergeDebugResources-46:/layout/fragment_user_management.xml",
+        "source": "com.storepilot.app-main-49:/layout/fragment_user_management.xml"
+    },
+    {
+        "merged": "com.storepilot.app-mergeDebugResources-46:/layout/fragment_product_details.xml",
+        "source": "com.storepilot.app-main-49:/layout/fragment_product_details.xml"
+    },
+    {
+        "merged": "com.storepilot.app-mergeDebugResources-46:/layout/activity_add_sale.xml",
+        "source": "com.storepilot.app-main-49:/layout/activity_add_sale.xml"
+    },
+    {
+        "merged": "com.storepilot.app-mergeDebugResources-46:/layout/activity_add_edit_task.xml",
+        "source": "com.storepilot.app-main-49:/layout/activity_add_edit_task.xml"
+    },
+    {
+        "merged": "com.storepilot.app-mergeDebugResources-46:/layout/item_task.xml",
+        "source": "com.storepilot.app-main-49:/layout/item_task.xml"
+    },
+    {
+        "merged": "com.storepilot.app-mergeDebugResources-46:/layout/activity_add_purchase.xml",
+        "source": "com.storepilot.app-main-49:/layout/activity_add_purchase.xml"
+    },
+    {
+        "merged": "com.storepilot.app-mergeDebugResources-46:/layout/fragment_reports.xml",
+        "source": "com.storepilot.app-main-49:/layout/fragment_reports.xml"
+    },
+    {
+        "merged": "com.storepilot.app-mergeDebugResources-46:/layout/activity_login.xml",
+        "source": "com.storepilot.app-main-49:/layout/activity_login.xml"
+    },
+    {
+        "merged": "com.storepilot.app-mergeDebugResources-46:/layout/fragment_dashboard.xml",
+        "source": "com.storepilot.app-main-49:/layout/fragment_dashboard.xml"
+    },
+    {
+        "merged": "com.storepilot.app-mergeDebugResources-46:/layout/activity_setup.xml",
+        "source": "com.storepilot.app-main-49:/layout/activity_setup.xml"
+    },
+    {
+        "merged": "com.storepilot.app-mergeDebugResources-46:/layout/item_sale.xml",
+        "source": "com.storepilot.app-main-49:/layout/item_sale.xml"
+    },
+    {
+        "merged": "com.storepilot.app-mergeDebugResources-46:/layout/fragment_sales_history.xml",
+        "source": "com.storepilot.app-main-49:/layout/fragment_sales_history.xml"
+    },
+    {
+        "merged": "com.storepilot.app-mergeDebugResources-46:/layout/activity_main.xml",
+        "source": "com.storepilot.app-main-49:/layout/activity_main.xml"
+    },
+    {
+        "merged": "com.storepilot.app-mergeDebugResources-46:/layout/item_report_row.xml",
+        "source": "com.storepilot.app-main-49:/layout/item_report_row.xml"
+    },
+    {
+        "merged": "com.storepilot.app-mergeDebugResources-46:/layout/fragment_video_metrics.xml",
+        "source": "com.storepilot.app-main-49:/layout/fragment_video_metrics.xml"
+    },
+    {
+        "merged": "com.storepilot.app-mergeDebugResources-46:/layout/item_product.xml",
+        "source": "com.storepilot.app-main-49:/layout/item_product.xml"
+    },
+    {
+        "merged": "com.storepilot.app-mergeDebugResources-46:/layout/item_user.xml",
+        "source": "com.storepilot.app-main-49:/layout/item_user.xml"
+    },
+    {
+        "merged": "com.storepilot.app-mergeDebugResources-46:/layout/item_purchase.xml",
+        "source": "com.storepilot.app-main-49:/layout/item_purchase.xml"
+    },
+    {
+        "merged": "com.storepilot.app-mergeDebugResources-46:/layout/fragment_season_list.xml",
+        "source": "com.storepilot.app-main-49:/layout/fragment_season_list.xml"
+    },
+    {
+        "merged": "com.storepilot.app-mergeDebugResources-46:/layout/item_video_metric.xml",
+        "source": "com.storepilot.app-main-49:/layout/item_video_metric.xml"
+    }
+]

@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="task_priorities">
+        <item>LOW</item>
+        <item>MEDIUM</item>
+        <item>HIGH</item>
+    </string-array>
+    <string-array name="task_statuses">
+        <item>TODO</item>
+        <item>IN_PROGRESS</item>
+        <item>DONE</item>
+    </string-array>
+    <color name="colorAccent">#00BCD4</color>
+    <color name="colorActive">#4CAF50</color>
+    <color name="colorBackground">#F5F5F5</color>
+    <color name="colorError">#B00020</color>
+    <color name="colorHighPriority">#F44336</color>
+    <color name="colorInactive">#9E9E9E</color>
+    <color name="colorLowPriority">#4CAF50</color>
+    <color name="colorLowStock">#FF5722</color>
+    <color name="colorMediumPriority">#FF9800</color>
+    <color name="colorOnPrimary">#FFFFFF</color>
+    <color name="colorOnSecondary">#000000</color>
+    <color name="colorPrimary">#1565C0</color>
+    <color name="colorPrimaryDark">#0D47A1</color>
+    <color name="colorPrimaryVariant">#1976D2</color>
+    <color name="colorSecondary">#FF6F00</color>
+    <color name="colorSecondaryVariant">#E65100</color>
+    <color name="colorSurface">#FFFFFF</color>
+    <color name="divider">#BDBDBD</color>
+    <color name="textPrimary">#212121</color>
+    <color name="textSecondary">#757575</color>
+    <dimen name="bottom_nav_height">56dp</dimen>
+    <dimen name="card_corner_radius">8dp</dimen>
+    <dimen name="card_elevation">4dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="item_height">72dp</dimen>
+    <dimen name="spacing_large">24dp</dimen>
+    <dimen name="spacing_medium">16dp</dimen>
+    <dimen name="spacing_small">8dp</dimen>
+    <dimen name="spacing_xlarge">32dp</dimen>
+    <dimen name="text_size_body">14sp</dimen>
+    <dimen name="text_size_headline">24sp</dimen>
+    <dimen name="text_size_small">12sp</dimen>
+    <dimen name="text_size_subtitle">16sp</dimen>
+    <dimen name="text_size_title">20sp</dimen>
+    <string name="active">Active</string>
+    <string name="add_metric">Add Video Metric</string>
+    <string name="add_product">Add Product</string>
+    <string name="add_purchase">Add Purchase</string>
+    <string name="add_sale">Add Sale</string>
+    <string name="add_season">Add Season</string>
+    <string name="add_task">Add Task</string>
+    <string name="alert_days">Alert Days Before End</string>
+    <string name="app_name">StorePilot</string>
+    <string name="assigned_to">Assigned To (User ID)</string>
+    <string name="category">Category</string>
+    <string name="color">Color</string>
+    <string name="comments_count">Comments</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="cost_price">Cost Price ($)</string>
+    <string name="create_owner_account">Create Owner Account</string>
+    <string name="demo_hint">Demo: owner/ahmad123, manager/sss123, employee/aaa123</string>
+    <string name="description">Description</string>
+    <string name="due_date">Due Date (yyyy-MM-dd)</string>
+    <string name="edit_product">Edit Product</string>
+    <string name="enable_demo_mode">Enable Demo Mode (seed sample data)</string>
+    <string name="end_date">End Date (yyyy-MM-dd)</string>
+    <string name="error_fill_all_fields">Please fill all required fields</string>
+    <string name="error_invalid_date">Invalid date format. Use yyyy-MM-dd</string>
+    <string name="error_password_too_short">Password must be at least 6 characters</string>
+    <string name="error_passwords_no_match">Passwords do not match</string>
+    <string name="likes">Likes</string>
+    <string name="login">Login</string>
+    <string name="logout">Logout</string>
+    <string name="low_stock_items">Low Stock Items</string>
+    <string name="my_tasks">My Tasks</string>
+    <string name="nav_dashboard">Dashboard</string>
+    <string name="nav_inventory">Inventory</string>
+    <string name="nav_more">More</string>
+    <string name="nav_sales">Sales</string>
+    <string name="nav_tasks">Tasks</string>
+    <string name="notes">Notes</string>
+    <string name="password">Password</string>
+    <string name="pending_tasks">Pending Tasks</string>
+    <string name="platform">Platform</string>
+    <string name="price">Price ($)</string>
+    <string name="private_tasks">Private</string>
+    <string name="product_id">Product ID</string>
+    <string name="product_name">Product Name</string>
+    <string name="quantity">Quantity</string>
+    <string name="reports">Reports</string>
+    <string name="sales_total">Sales Total</string>
+    <string name="save">Save</string>
+    <string name="season_ending_soon">⚠ Season ending soon: %1$s</string>
+    <string name="season_name">Season Name</string>
+    <string name="setup_complete">Account created! Please log in.</string>
+    <string name="shares">Shares</string>
+    <string name="size">Size</string>
+    <string name="start_date">Start Date (yyyy-MM-dd)</string>
+    <string name="supplier">Supplier</string>
+    <string name="task_title">Title</string>
+    <string name="team_tasks">Team Tasks</string>
+    <string name="this_month">This Month</string>
+    <string name="this_week">This Week</string>
+    <string name="this_year">This Year</string>
+    <string name="today_sales">Today\'s Sales</string>
+    <string name="total_cost">Total Cost ($)</string>
+    <string name="total_price">Total Price ($)</string>
+    <string name="user_management">User Management</string>
+    <string name="username">Username</string>
+    <string name="video_title">Video Title</string>
+    <string name="views">Views</string>
+    <style name="Theme.StorePilot" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryVariant">@color/colorPrimaryVariant</item>
+        <item name="colorOnPrimary">@color/colorOnPrimary</item>
+        <item name="colorSecondary">@color/colorSecondary</item>
+        <item name="colorSecondaryVariant">@color/colorSecondaryVariant</item>
+        <item name="colorOnSecondary">@color/colorOnSecondary</item>
+        <item name="android:statusBarColor">@color/colorPrimaryDark</item>
+    </style>
+    <style name="Theme.StorePilot.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+</resources>
