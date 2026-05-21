@@ -2,6 +2,7 @@
 <!-- Product detail screen — shows full info about one product -->
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorBackground">
@@ -20,7 +21,6 @@
             android:padding="8dp"
             android:background="@color/colorSurface">
 
-            <!-- Back arrow button -->
             <ImageView
                 android:id="@+id/ivBack"
                 android:layout_width="40dp"
@@ -41,7 +41,7 @@
 
         </LinearLayout>
 
-        <!-- Product image area (large placeholder) -->
+        <!-- Product image placeholder -->
         <View
             android:layout_width="match_parent"
             android:layout_height="250dp"
@@ -49,7 +49,6 @@
 
         <!-- Product info card -->
         <com.google.android.material.card.MaterialCardView
-            xmlns:app="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
@@ -73,7 +72,7 @@
                     android:textColor="@color/textPrimary"
                     android:layout_marginBottom="4dp" />
 
-                <!-- Category, color, size -->
+                <!-- Category / color / size -->
                 <TextView
                     android:id="@+id/tvCategory"
                     android:layout_width="match_parent"
@@ -83,7 +82,7 @@
                     android:textColor="@color/textSecondary"
                     android:layout_marginBottom="12dp" />
 
-                <!-- Price in large bold text -->
+                <!-- Price -->
                 <TextView
                     android:id="@+id/tvPrice"
                     android:layout_width="match_parent"
@@ -94,7 +93,7 @@
                     android:textColor="@color/colorAccent"
                     android:layout_marginBottom="8dp" />
 
-                <!-- Stock availability -->
+                <!-- Stock status -->
                 <TextView
                     android:id="@+id/tvStock"
                     android:layout_width="wrap_content"
@@ -104,7 +103,7 @@
                     android:textColor="@color/colorActive"
                     android:layout_marginBottom="16dp" />
 
-                <!-- Product description -->
+                <!-- Description -->
                 <TextView
                     android:id="@+id/tvDescription"
                     android:layout_width="match_parent"
@@ -115,31 +114,28 @@
                     android:lineSpacingMultiplier="1.5"
                     android:layout_marginBottom="24dp" />
 
-                <!-- Action buttons row -->
+                <!-- Action buttons -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center_vertical">
 
-                    <!-- Save to wishlist button -->
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnFavorite"
                         android:layout_width="0dp"
                         android:layout_height="48dp"
                         android:layout_weight="1"
-                        android:text="♡ Save"
+                        android:text="Save"
                         android:layout_marginEnd="8dp"
-                        style="@style/Widget.Material3.Button.OutlinedButton" />
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
 
-                    <!-- Add to cart button -->
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnAddToCart"
                         android:layout_width="0dp"
                         android:layout_height="48dp"
                         android:layout_weight="2"
-                        android:text="Add to Cart"
-                        style="@style/Widget.Material3.Button" />
+                        android:text="Add to Cart" />
 
                 </LinearLayout>
 

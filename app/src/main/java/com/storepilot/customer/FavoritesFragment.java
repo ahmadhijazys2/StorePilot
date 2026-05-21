@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.storepilot.R;
-import com.storepilot.core.AppDatabase;
 import com.storepilot.core.SessionManager;
 import com.storepilot.customer.adapters.CustomerProductAdapter;
 import com.storepilot.db.entities.Favorite;
@@ -26,7 +25,7 @@ import com.storepilot.viewmodels.ProductViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
-// Customer's wishlist — shows favorited products
+// Customer's wishlist — shows products the customer has favorited
 public class FavoritesFragment extends Fragment {
 
     private RecyclerView rvFavorites;
@@ -35,6 +34,10 @@ public class FavoritesFragment extends Fragment {
     private ProductViewModel productViewModel;
     private CartViewModel cartViewModel;
     private CustomerProductAdapter adapter;
+
+    // Cached latest values from both LiveData streams
+    private List<Favorite> latestFavorites = new ArrayList<>();
+    private List<Product> latestProducts = new ArrayList<>();
 
     @Nullable
     @Override
@@ -59,9 +62,7 @@ public class FavoritesFragment extends Fragment {
 
         int customerId = SessionManager.getInstance().getLoggedInUser().getId();
 
-        // Adapter for showing favorited products as cards
         adapter = new CustomerProductAdapter(new ArrayList<>(), product -> {
-            // Open product details
             ProductDetailFragment detail = new ProductDetailFragment();
             Bundle args = new Bundle();
             args.putInt("productId", product.getId());
@@ -75,25 +76,32 @@ public class FavoritesFragment extends Fragment {
 
         rvFavorites.setAdapter(adapter);
 
-        // When favorites list changes, resolve product details
+        // Observe favorites and products independently, then combine when either changes
         favoritesViewModel.getFavorites(customerId).observe(getViewLifecycleOwner(), favorites -> {
-            productViewModel.getAllProducts().observe(getViewLifecycleOwner(), products -> {
-                List<Product> favProducts = new ArrayList<>();
-                if (favorites != null && products != null) {
-                    for (Favorite fav : favorites) {
-                        for (Product p : products) {
-                            if (p.getId() == fav.getProductId()) {
-                                favProducts.add(p);
-                                break;
-                            }
-                        }
-                    }
-                }
-                adapter.setProducts(favProducts);
-                boolean empty = favProducts.isEmpty();
-                tvEmpty.setVisibility(empty ? View.VISIBLE : View.GONE);
-                rvFavorites.setVisibility(empty ? View.GONE : View.VISIBLE);
-            });
+            latestFavorites = favorites != null ? favorites : new ArrayList<>();
+            updateFavoritesDisplay();
         });
+
+        productViewModel.getAllProducts().observe(getViewLifecycleOwner(), products -> {
+            latestProducts = products != null ? products : new ArrayList<>();
+            updateFavoritesDisplay();
+        });
+    }
+
+    // Build the product list from the intersection of favorites and all products
+    private void updateFavoritesDisplay() {
+        List<Product> favProducts = new ArrayList<>();
+        for (Favorite fav : latestFavorites) {
+            for (Product p : latestProducts) {
+                if (p.getId() == fav.getProductId()) {
+                    favProducts.add(p);
+                    break;
+                }
+            }
+        }
+        adapter.setProducts(favProducts);
+        boolean empty = favProducts.isEmpty();
+        tvEmpty.setVisibility(empty ? View.VISIBLE : View.GONE);
+        rvFavorites.setVisibility(empty ? View.GONE : View.VISIBLE);
     }
 }

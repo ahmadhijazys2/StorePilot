@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
@@ -17,11 +16,14 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.storepilot.R;
 import com.storepilot.core.SessionManager;
+import com.storepilot.db.entities.CartItem;
+import com.storepilot.db.entities.Product;
 import com.storepilot.viewmodels.CartViewModel;
 import com.storepilot.viewmodels.OrderViewModel;
 import com.storepilot.viewmodels.ProductViewModel;
 
 import java.util.ArrayList;
+import java.util.List;
 
 // Checkout screen — collects shipping address and payment method, then places the order
 public class CheckoutFragment extends Fragment {
@@ -32,6 +34,10 @@ public class CheckoutFragment extends Fragment {
     private CartViewModel cartViewModel;
     private OrderViewModel orderViewModel;
     private ProductViewModel productViewModel;
+
+    // Cached LiveData values used when the button is tapped
+    private List<CartItem> currentCartItems = new ArrayList<>();
+    private List<Product> currentProducts = new ArrayList<>();
 
     @Nullable
     @Override
@@ -55,10 +61,17 @@ public class CheckoutFragment extends Fragment {
 
         int customerId = SessionManager.getInstance().getLoggedInUser().getId();
 
-        // Listen for successful order placement
+        // Cache cart items so the click handler can read them without re-observing
+        cartViewModel.getCartItems(customerId).observe(getViewLifecycleOwner(), cartItems ->
+                currentCartItems = cartItems != null ? cartItems : new ArrayList<>());
+
+        // Cache product list for price lookup
+        productViewModel.getAllProducts().observe(getViewLifecycleOwner(), products ->
+                currentProducts = products != null ? products : new ArrayList<>());
+
+        // Navigate to confirmation once the order is placed successfully
         orderViewModel.orderPlaced.observe(getViewLifecycleOwner(), placed -> {
             if (Boolean.TRUE.equals(placed)) {
-                // Show order confirmation screen
                 requireActivity().getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.customerFragmentContainer, new OrderConfirmationFragment())
@@ -72,8 +85,12 @@ public class CheckoutFragment extends Fragment {
                 Toast.makeText(requireContext(), "Please enter your shipping address.", Toast.LENGTH_SHORT).show();
                 return;
             }
+            if (currentCartItems.isEmpty()) {
+                Toast.makeText(requireContext(), "Your cart is empty.", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
-            // Map radio button to payment method string
+            // Map radio selection to payment method string
             int selectedId = rgPayment.getCheckedRadioButtonId();
             String paymentMethod;
             if (selectedId == R.id.rbCash) {
@@ -85,20 +102,8 @@ public class CheckoutFragment extends Fragment {
             }
 
             btnPlaceOrder.setEnabled(false);
-
-            // Get cart and products to place the order
-            cartViewModel.getCartItems(customerId).observe(getViewLifecycleOwner(), cartItems -> {
-                productViewModel.getAllProducts().observe(getViewLifecycleOwner(), products -> {
-                    if (cartItems == null || cartItems.isEmpty()) {
-                        Toast.makeText(requireContext(), "Your cart is empty.", Toast.LENGTH_SHORT).show();
-                        btnPlaceOrder.setEnabled(true);
-                        return;
-                    }
-                    // Place the order
-                    orderViewModel.placeOrder(customerId, paymentMethod, address,
-                            cartItems, products != null ? products : new ArrayList<>());
-                });
-            });
+            orderViewModel.placeOrder(customerId, paymentMethod, address,
+                    currentCartItems, currentProducts);
         });
     }
 }

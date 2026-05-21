@@ -27,8 +27,9 @@ public class AuthViewModel extends AndroidViewModel {
 
     public void checkNeedsSetup() {
         AppDatabase.dbExecutor.execute(() -> {
-            int ownerCount = userRepository.getOwnerCount();
-            needsSetup.postValue(ownerCount == 0);
+            // Show setup only on a completely fresh install (no users at all)
+            int totalUsers = userRepository.getUserCountSync();
+            needsSetup.postValue(totalUsers == 0);
         });
     }
 

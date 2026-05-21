@@ -43,6 +43,11 @@ public class UserRepository {
         return userDao.getOwnerCount();
     }
 
+    // Returns total user count synchronously (for setup check on background thread)
+    public int getUserCountSync() {
+        return userDao.getUserCountSync();
+    }
+
     // Find user by email address (used for email-based login)
     public User findByEmail(String email) {
         return userDao.findByEmail(email);

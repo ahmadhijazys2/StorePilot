@@ -44,6 +44,10 @@ public interface UserDao {
     @Query("SELECT COUNT(*) FROM users")
     LiveData<Integer> getTotalUserCount();
 
+    // Synchronous count for setup check on background thread
+    @Query("SELECT COUNT(*) FROM users")
+    int getUserCountSync();
+
     // Count only customers (for dashboard stats)
     @Query("SELECT COUNT(*) FROM users WHERE role = 'CUSTOMER'")
     LiveData<Integer> getCustomerCount();

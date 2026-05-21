@@ -2,6 +2,7 @@
 <!-- Checkout screen — shipping address and payment method selection -->
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorBackground"
@@ -58,50 +59,44 @@
             android:textColor="@color/textPrimary"
             android:layout_marginBottom="8dp" />
 
-        <!-- Payment method radio buttons -->
         <RadioGroup
             android:id="@+id/rgPaymentMethod"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="32dp">
 
-            <!-- Credit card option -->
             <RadioButton
                 android:id="@+id/rbCreditCard"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="💳 Credit Card"
+                android:text="Credit Card"
                 android:textSize="15sp"
                 android:checked="true"
                 android:layout_marginBottom="8dp" />
 
-            <!-- PayPal option -->
             <RadioButton
                 android:id="@+id/rbPaypal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="🔵 PayPal"
+                android:text="PayPal"
                 android:textSize="15sp"
                 android:layout_marginBottom="8dp" />
 
-            <!-- Cash on delivery option -->
             <RadioButton
                 android:id="@+id/rbCash"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="💵 Cash on Delivery"
+                android:text="Cash on Delivery"
                 android:textSize="15sp" />
 
         </RadioGroup>
 
-        <!-- Place order button -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnPlaceOrder"
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:text="Place Order"
-            android:textSize="16sp"
-            style="@style/Widget.Material3.Button" />
+            android:textSize="16sp" />
 
     </LinearLayout>
 </ScrollView>

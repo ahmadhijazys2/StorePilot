@@ -9,11 +9,11 @@
     android:padding="32dp"
     android:background="@color/colorBackground">
 
-    <!-- Big checkmark or success icon -->
+    <!-- Success checkmark circle -->
     <TextView
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:text="✓"
+        android:text="&#10003;"
         android:textSize="48sp"
         android:textColor="#FFFFFF"
         android:gravity="center"
@@ -48,16 +48,15 @@
         android:layout_height="56dp"
         android:text="View My Orders"
         android:textSize="16sp"
-        android:layout_marginBottom="12dp"
-        style="@style/Widget.Material3.Button" />
+        android:layout_marginBottom="12dp" />
 
-    <!-- Continue shopping button -->
+    <!-- Continue shopping button (outlined) -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnContinueShopping"
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:text="Continue Shopping"
         android:textSize="16sp"
-        style="@style/Widget.Material3.Button.OutlinedButton" />
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
 
 </LinearLayout>
