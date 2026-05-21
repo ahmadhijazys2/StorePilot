@@ -23,6 +23,8 @@ import com.storepilot.sales.SalesHistoryFragment;
 import com.storepilot.seasons.SeasonListFragment;
 import com.storepilot.tasks.TaskListFragment;
 import com.storepilot.admin.UserManagementFragment;
+import com.storepilot.manager.OrderManagementFragment;
+import com.storepilot.manager.SupportConversationsFragment;
 
 public class MainActivity extends BaseActivity {
 
@@ -108,6 +110,12 @@ public class MainActivity extends BaseActivity {
                 loadFragment(new SeasonListFragment());
             } else if (id == R.id.menu_admin) {
                 loadFragment(new UserManagementFragment());
+            } else if (id == R.id.menu_orders) {
+                // Open order management screen
+                loadFragment(new OrderManagementFragment());
+            } else if (id == R.id.menu_support) {
+                // Open customer support inbox
+                loadFragment(new SupportConversationsFragment());
             } else if (id == R.id.menu_logout) {
                 SessionManager.getInstance().logout();
                 startActivity(new Intent(this, LoginActivity.class));

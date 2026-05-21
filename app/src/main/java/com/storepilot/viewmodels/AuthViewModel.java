@@ -32,9 +32,13 @@ public class AuthViewModel extends AndroidViewModel {
         });
     }
 
-    public void login(String username, String password) {
+    public void login(String usernameOrEmail, String password) {
         AppDatabase.dbExecutor.execute(() -> {
-            User user = userRepository.findByUsername(username);
+            // Try username first, then email (supports both login methods)
+            User user = userRepository.findByUsername(usernameOrEmail);
+            if (user == null) {
+                user = userRepository.findByEmail(usernameOrEmail);
+            }
             if (user == null) {
                 loginError.postValue("Invalid username or password");
                 return;
@@ -43,6 +47,7 @@ public class AuthViewModel extends AndroidViewModel {
                 loginError.postValue("Invalid username or password");
                 return;
             }
+            // Save the logged-in user in session
             SessionManager.getInstance().setLoggedInUser(user);
             loginSuccess.postValue(true);
         });

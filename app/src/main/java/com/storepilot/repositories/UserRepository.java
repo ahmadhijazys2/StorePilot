@@ -42,4 +42,9 @@ public class UserRepository {
     public int getOwnerCount() {
         return userDao.getOwnerCount();
     }
+
+    // Find user by email address (used for email-based login)
+    public User findByEmail(String email) {
+        return userDao.findByEmail(email);
+    }
 }

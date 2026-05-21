@@ -35,4 +35,16 @@ public interface UserDao {
 
     @Query("SELECT COUNT(*) FROM users WHERE role = 'OWNER'")
     int getOwnerCount();
+
+    // Find user by email (used for email-based login)
+    @Query("SELECT * FROM users WHERE email = :email LIMIT 1")
+    User findByEmail(String email);
+
+    // Count total registered users (for dashboard stats)
+    @Query("SELECT COUNT(*) FROM users")
+    LiveData<Integer> getTotalUserCount();
+
+    // Count only customers (for dashboard stats)
+    @Query("SELECT COUNT(*) FROM users WHERE role = 'CUSTOMER'")
+    LiveData<Integer> getCustomerCount();
 }

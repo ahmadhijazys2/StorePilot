@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Bottom navigation tabs for the customer-facing app -->
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Home / product browse tab -->
+    <item
+        android:id="@+id/nav_customer_home"
+        android:icon="@android:drawable/ic_menu_gallery"
+        android:title="Shop" />
+
+    <!-- Shopping cart tab -->
+    <item
+        android:id="@+id/nav_customer_cart"
+        android:icon="@android:drawable/ic_menu_add"
+        android:title="Cart" />
+
+    <!-- Order history tab -->
+    <item
+        android:id="@+id/nav_customer_orders"
+        android:icon="@android:drawable/ic_menu_recent_history"
+        android:title="Orders" />
+
+    <!-- Wishlist/favorites tab -->
+    <item
+        android:id="@+id/nav_customer_favorites"
+        android:icon="@android:drawable/btn_star_big_on"
+        android:title="Saved" />
+
+    <!-- Support chat tab -->
+    <item
+        android:id="@+id/nav_customer_support"
+        android:icon="@android:drawable/ic_menu_help"
+        android:title="Support" />
+
+</menu>

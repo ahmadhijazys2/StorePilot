@@ -92,6 +92,48 @@
     <string name="user_management">User Management</string>
     <string name="logout">Logout</string>
 
+    <!-- Customer-facing strings -->
+    <string name="shop">Shop</string>
+    <string name="my_cart">My Cart</string>
+    <string name="my_orders">My Orders</string>
+    <string name="my_wishlist">My Wishlist</string>
+    <string name="support_chat">Support</string>
+    <string name="checkout">Checkout</string>
+    <string name="place_order">Place Order</string>
+    <string name="order_placed">Order Placed!</string>
+    <string name="add_to_cart">Add to Cart</string>
+    <string name="in_stock">In Stock</string>
+    <string name="out_of_stock">Out of Stock</string>
+    <string name="cart_empty">Your cart is empty</string>
+    <string name="no_orders">No orders yet</string>
+    <string name="no_favorites">No favorites saved</string>
+    <string name="payment_method">Payment Method</string>
+    <string name="cash_on_delivery">Cash on Delivery</string>
+    <string name="credit_card">Credit Card</string>
+    <string name="paypal">PayPal</string>
+    <string name="shipping_address">Shipping Address</string>
+    <string name="order_total">Order Total</string>
+
+    <!-- Registration strings -->
+    <string name="register">Register</string>
+    <string name="full_name">Full Name</string>
+    <string name="email">Email</string>
+    <string name="phone">Phone Number</string>
+    <string name="create_account">Create Account</string>
+    <string name="role_customer">Customer</string>
+    <string name="role_manager">Manager</string>
+    <string name="role_owner">Owner</string>
+    <string name="already_have_account">Already have an account? Login</string>
+    <string name="dont_have_account">Don\'t have an account? Register</string>
+    <string name="forgot_password">Forgot password?</string>
+
+    <!-- Manager strings -->
+    <string name="order_management">Order Management</string>
+    <string name="support_inbox">Support Inbox</string>
+    <string name="update_status">Update Status</string>
+    <string name="orders_today">Orders Today</string>
+    <string name="revenue_today">Revenue Today</string>
+
     <!-- Arrays -->
     <string-array name="task_statuses">
         <item>TODO</item>

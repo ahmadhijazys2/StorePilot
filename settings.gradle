@@ -1,3 +1,4 @@
+// Declares where to find plugins and dependencies
 pluginManagement {
     repositories {
         google()

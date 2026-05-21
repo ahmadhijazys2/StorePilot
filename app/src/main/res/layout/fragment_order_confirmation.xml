@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Order confirmation screen — shown after a successful order -->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="32dp"
+    android:background="@color/colorBackground">
+
+    <!-- Big checkmark or success icon -->
+    <TextView
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:text="✓"
+        android:textSize="48sp"
+        android:textColor="#FFFFFF"
+        android:gravity="center"
+        android:background="@drawable/circle_green"
+        android:layout_marginBottom="24dp" />
+
+    <!-- Success title -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Order Placed!"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:textColor="@color/textPrimary"
+        android:layout_marginBottom="8dp" />
+
+    <!-- Confirmation message -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Your order has been received and is being processed. You will receive updates on your order status."
+        android:textSize="15sp"
+        android:textColor="@color/textSecondary"
+        android:gravity="center"
+        android:lineSpacingMultiplier="1.5"
+        android:layout_marginBottom="48dp" />
+
+    <!-- View order history button -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnViewOrders"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:text="View My Orders"
+        android:textSize="16sp"
+        android:layout_marginBottom="12dp"
+        style="@style/Widget.Material3.Button" />
+
+    <!-- Continue shopping button -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnContinueShopping"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:text="Continue Shopping"
+        android:textSize="16sp"
+        style="@style/Widget.Material3.Button.OutlinedButton" />
+
+</LinearLayout>

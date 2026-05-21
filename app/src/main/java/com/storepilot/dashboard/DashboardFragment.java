@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.storepilot.R;
 import com.storepilot.core.SessionManager;
+import com.storepilot.viewmodels.OrderViewModel;
 import com.storepilot.viewmodels.ProductViewModel;
 import com.storepilot.viewmodels.SaleViewModel;
 import com.storepilot.viewmodels.SeasonViewModel;
@@ -25,6 +26,7 @@ import java.util.Locale;
 public class DashboardFragment extends Fragment {
 
     private TextView tvSeasonAlert, tvTodaySales, tvLowStockCount, tvPendingTasks;
+    private TextView tvTodayOrders, tvTodayRevenue;
     private View cardSeasonAlert;
 
     @Nullable
@@ -43,6 +45,8 @@ public class DashboardFragment extends Fragment {
         tvTodaySales = view.findViewById(R.id.tvTodaySales);
         tvLowStockCount = view.findViewById(R.id.tvLowStockCount);
         tvPendingTasks = view.findViewById(R.id.tvPendingTasks);
+        tvTodayOrders = view.findViewById(R.id.tvTodayOrders);
+        tvTodayRevenue = view.findViewById(R.id.tvTodayRevenue);
 
         SeasonViewModel seasonVM = new ViewModelProvider(this).get(SeasonViewModel.class);
         SaleViewModel saleVM = new ViewModelProvider(this).get(SaleViewModel.class);
@@ -86,6 +90,18 @@ public class DashboardFragment extends Fragment {
                 ? SessionManager.getInstance().getLoggedInUser().getId() : 0;
         taskVM.getPendingTaskCount(userId).observe(getViewLifecycleOwner(), count -> {
             tvPendingTasks.setText(String.valueOf(count != null ? count : 0));
+        });
+
+        // Today's order count and revenue from customer orders
+        OrderViewModel orderVM = new ViewModelProvider(this).get(OrderViewModel.class);
+        orderVM.getTodayOrderCount(startOfDay).observe(getViewLifecycleOwner(), count -> {
+            if (tvTodayOrders != null)
+                tvTodayOrders.setText(String.valueOf(count != null ? count : 0));
+        });
+        orderVM.getTodayRevenue(startOfDay).observe(getViewLifecycleOwner(), revenue -> {
+            if (tvTodayRevenue != null)
+                tvTodayRevenue.setText(NumberFormat.getCurrencyInstance(Locale.US)
+                        .format(revenue != null ? revenue : 0.0));
         });
     }
 }

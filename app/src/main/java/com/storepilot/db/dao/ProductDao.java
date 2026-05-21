@@ -42,4 +42,12 @@ public interface ProductDao {
 
     @Query("SELECT * FROM products WHERE id = :id LIMIT 1")
     Product getByIdSync(int id);
+
+    // Alias used in ProductDetailFragment
+    @Query("SELECT * FROM products WHERE id = :id LIMIT 1")
+    Product findById(int id);
+
+    // Count products with low stock (for dashboard alert)
+    @Query("SELECT COUNT(*) FROM products WHERE quantity <= :threshold")
+    LiveData<Integer> getLowStockCount(int threshold);
 }
