@@ -21,7 +21,7 @@ public class LoginActivity extends BaseActivity {
 
     private EditText etUsername, etPassword;
     private Button btnLogin;
-    private TextView tvDemoHint, tvRegisterLink, tvForgotPassword;
+    private TextView tvRegisterLink, tvForgotPassword;
     private AuthViewModel authViewModel;
 
     @Override
@@ -33,7 +33,6 @@ public class LoginActivity extends BaseActivity {
         etUsername = findViewById(R.id.etUsername);
         etPassword = findViewById(R.id.etPassword);
         btnLogin = findViewById(R.id.btnLogin);
-        tvDemoHint = findViewById(R.id.tvDemoHint);
         tvRegisterLink = findViewById(R.id.tvRegisterLink);
         tvForgotPassword = findViewById(R.id.tvForgotPassword);
 

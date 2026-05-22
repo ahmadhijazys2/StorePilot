@@ -34,6 +34,11 @@
             android:name=".auth.RegisterActivity"
             android:exported="false" />
 
+        <!-- Role selection screen (shown after Sign Up) -->
+        <activity
+            android:name=".auth.RoleSelectionActivity"
+            android:exported="false" />
+
         <!-- First-time owner setup screen -->
         <activity
             android:name=".auth.SetupActivity"

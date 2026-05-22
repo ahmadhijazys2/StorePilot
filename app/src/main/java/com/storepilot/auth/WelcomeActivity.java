@@ -30,9 +30,9 @@ public class WelcomeActivity extends BaseActivity {
         btnLogin.setOnClickListener(v ->
                 startActivity(new Intent(this, LoginActivity.class)));
 
-        // Go to registration screen
+        // Go to role selection, then registration
         btnRegister.setOnClickListener(v ->
-                startActivity(new Intent(this, RegisterActivity.class)));
+                startActivity(new Intent(this, RoleSelectionActivity.class)));
     }
 
     // Route user to the right app based on their role

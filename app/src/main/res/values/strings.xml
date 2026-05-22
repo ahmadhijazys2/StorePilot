@@ -6,10 +6,8 @@
     <string name="login">Login</string>
     <string name="username">Username</string>
     <string name="password">Password</string>
-    <string name="demo_hint">Demo: owner/ahmad123, manager/sss123, employee/aaa123</string>
     <string name="create_owner_account">Create Owner Account</string>
     <string name="confirm_password">Confirm Password</string>
-    <string name="enable_demo_mode">Enable Demo Mode (seed sample data)</string>
     <string name="setup_complete">Account created! Please log in.</string>
 
     <!-- Errors -->

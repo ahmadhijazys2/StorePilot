@@ -58,13 +58,6 @@
             android:inputType="textPassword" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <CheckBox
-        android:id="@+id/cbDemoMode"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/enable_demo_mode"
-        android:layout_marginBottom="@dimen/spacing_medium" />
-
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnCreate"
         android:layout_width="match_parent"

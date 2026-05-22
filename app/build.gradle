@@ -61,4 +61,7 @@ dependencies {
 
     // Fragment
     implementation 'androidx.fragment:fragment:1.6.2'
+
+    // Firebase Authentication (manual init — no google-services.json required at build time)
+    implementation 'com.google.firebase:firebase-auth:22.3.1'
 }

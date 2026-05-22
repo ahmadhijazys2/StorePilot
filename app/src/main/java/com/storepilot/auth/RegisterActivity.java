@@ -15,20 +15,19 @@ import com.storepilot.core.AppDatabase;
 import com.storepilot.core.BaseActivity;
 import com.storepilot.db.entities.User;
 
-// Registration screen — creates a new user account
 public class RegisterActivity extends BaseActivity {
 
     private EditText etFullName, etUsername, etEmail, etPhone, etPassword, etConfirmPassword;
     private Spinner spinnerRole;
     private Button btnRegister;
-    private TextView tvLoginLink;
+    private TextView tvLoginLink, tvSelectedRole, tvRoleLabel;
+    private String preSelectedRole;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        // Find all the form fields
         etFullName = findViewById(R.id.etFullName);
         etUsername = findViewById(R.id.etUsername);
         etEmail = findViewById(R.id.etEmail);
@@ -38,13 +37,25 @@ public class RegisterActivity extends BaseActivity {
         spinnerRole = findViewById(R.id.spinnerRole);
         btnRegister = findViewById(R.id.btnRegister);
         tvLoginLink = findViewById(R.id.tvLoginLink);
+        tvSelectedRole = findViewById(R.id.tvSelectedRole);
+        tvRoleLabel = findViewById(R.id.tvRoleLabel);
 
-        // Populate the role dropdown
-        String[] roles = {"Customer", "Manager", "Owner"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_item, roles);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerRole.setAdapter(adapter);
+        preSelectedRole = getIntent().getStringExtra(RoleSelectionActivity.EXTRA_ROLE);
+
+        if (preSelectedRole != null) {
+            // Role was chosen on the previous screen — hide spinner, show label
+            tvSelectedRole.setText("Signing up as: " + preSelectedRole);
+            tvSelectedRole.setVisibility(View.VISIBLE);
+            tvRoleLabel.setVisibility(View.GONE);
+            spinnerRole.setVisibility(View.GONE);
+        } else {
+            // No pre-selected role — show full spinner
+            String[] roles = {"Customer", "Manager", "Owner"};
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                    android.R.layout.simple_spinner_item, roles);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spinnerRole.setAdapter(adapter);
+        }
 
         // Handle register button click
         btnRegister.setOnClickListener(v -> attemptRegister());
@@ -84,8 +95,10 @@ public class RegisterActivity extends BaseActivity {
             return;
         }
 
-        // Map the spinner selection to a role string
-        String selectedRole = spinnerRole.getSelectedItem().toString();
+        // Use pre-selected role if available, otherwise read from spinner
+        String selectedRole = preSelectedRole != null
+                ? preSelectedRole
+                : (spinnerRole.getSelectedItem() != null ? spinnerRole.getSelectedItem().toString() : "Customer");
         String role;
         switch (selectedRole) {
             case "Manager": role = "STORE_MANAGER"; break;
@@ -96,26 +109,43 @@ public class RegisterActivity extends BaseActivity {
         // Disable button to prevent double-tap
         btnRegister.setEnabled(false);
 
-        // Hash the password and save the user in background
         String finalRole = role;
+        String finalEmail = email;
+        String finalPassword = password;
+
         AppDatabase.dbExecutor.execute(() -> {
             String salt = CryptoUtil.generateSalt();
-            String hash = CryptoUtil.hashPassword(password, salt);
+            String hash = CryptoUtil.hashPassword(finalPassword, salt);
 
-            User newUser = new User(fullName, username, email, phone, hash, salt, finalRole,
+            User newUser = new User(fullName, username, finalEmail, phone, hash, salt, finalRole,
                     System.currentTimeMillis());
 
             try {
                 AppDatabase.getInstance(getApplication()).userDao().insert(newUser);
 
-                // Navigate to login after successful registration
-                runOnUiThread(() -> {
-                    Toast.makeText(this, "Account created! Please log in.", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(this, LoginActivity.class));
-                    finish();
+                // Also register with Firebase Authentication if configured
+                FirebaseAuthHelper.init(getApplicationContext());
+                FirebaseAuthHelper.signUp(finalEmail, finalPassword, new FirebaseAuthHelper.AuthCallback() {
+                    @Override
+                    public void onSuccess(String uid) {
+                        runOnUiThread(() -> {
+                            Toast.makeText(RegisterActivity.this, "Account created! Please sign in.", Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
+                            finish();
+                        });
+                    }
+
+                    @Override
+                    public void onFailure(String error) {
+                        // Firebase failed but local account was created — proceed anyway
+                        runOnUiThread(() -> {
+                            Toast.makeText(RegisterActivity.this, "Account created! Please sign in.", Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
+                            finish();
+                        });
+                    }
                 });
             } catch (Exception e) {
-                // Username or email already exists
                 runOnUiThread(() -> {
                     btnRegister.setEnabled(true);
                     Toast.makeText(this, "Username or email already taken.", Toast.LENGTH_SHORT).show();

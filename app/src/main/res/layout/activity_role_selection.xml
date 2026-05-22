@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Welcome screen — first screen when opening the app -->
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -9,48 +8,37 @@
     android:padding="32dp"
     android:background="@color/colorBackground">
 
-    <!-- App logo circle -->
-    <View
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:background="@drawable/circle_cyan"
-        android:layout_marginBottom="24dp" />
-
-    <!-- App name -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="StorePilot"
-        android:textSize="34sp"
+        android:text="I am signing up as..."
+        android:textSize="24sp"
         android:textStyle="bold"
         android:textColor="@color/textPrimary"
-        android:layout_marginBottom="8dp" />
+        android:layout_marginBottom="12dp" />
 
-    <!-- Tagline -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Your smart store companion"
-        android:textSize="16sp"
+        android:text="Choose your account type"
+        android:textSize="14sp"
         android:textColor="@color/textSecondary"
         android:layout_marginBottom="48dp" />
 
-    <!-- Sign In button -->
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnLogin"
+        android:id="@+id/btnRoleOwner"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:text="Sign In"
-        android:textSize="16sp"
+        android:layout_height="64dp"
+        android:text="Owner"
+        android:textSize="18sp"
         android:layout_marginBottom="16dp" />
 
-    <!-- Sign Up button (outlined) -->
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnRegister"
+        android:id="@+id/btnRoleCustomer"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:text="Sign Up"
-        android:textSize="16sp"
+        android:layout_height="64dp"
+        android:text="Customer"
+        android:textSize="18sp"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
 
 </LinearLayout>

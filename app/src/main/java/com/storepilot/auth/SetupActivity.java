@@ -3,7 +3,6 @@ package com.storepilot.auth;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -16,7 +15,6 @@ import com.storepilot.viewmodels.AuthViewModel;
 public class SetupActivity extends BaseActivity {
 
     private EditText etOwnerUsername, etOwnerPassword, etConfirmPassword;
-    private CheckBox cbDemoMode;
     private Button btnCreate;
     private AuthViewModel authViewModel;
 
@@ -28,7 +26,6 @@ public class SetupActivity extends BaseActivity {
         etOwnerUsername = findViewById(R.id.etOwnerUsername);
         etOwnerPassword = findViewById(R.id.etOwnerPassword);
         etConfirmPassword = findViewById(R.id.etConfirmPassword);
-        cbDemoMode = findViewById(R.id.cbDemoMode);
         btnCreate = findViewById(R.id.btnCreate);
 
         authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
@@ -45,7 +42,6 @@ public class SetupActivity extends BaseActivity {
             String username = etOwnerUsername.getText().toString().trim();
             String password = etOwnerPassword.getText().toString();
             String confirm = etConfirmPassword.getText().toString();
-            boolean demoMode = cbDemoMode.isChecked();
 
             if (username.isEmpty() || password.isEmpty() || confirm.isEmpty()) {
                 Toast.makeText(this, getString(R.string.error_fill_all_fields), Toast.LENGTH_SHORT).show();
@@ -60,7 +56,7 @@ public class SetupActivity extends BaseActivity {
                 return;
             }
 
-            authViewModel.setupOwner(username, password, demoMode);
+            authViewModel.setupOwner(username, password, false);
         });
     }
 }

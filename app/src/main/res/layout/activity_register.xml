@@ -118,8 +118,20 @@
                 android:inputType="textPassword" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Role selection label -->
+        <!-- Pre-selected role label (shown when role was passed via intent) -->
         <TextView
+            android:id="@+id/tvSelectedRole"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textColor="@color/colorPrimary"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp"
+            android:visibility="gone" />
+
+        <!-- Role selection label (shown when no role pre-selected) -->
+        <TextView
+            android:id="@+id/tvRoleLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="I am a:"
