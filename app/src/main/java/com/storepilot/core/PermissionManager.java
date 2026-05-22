@@ -32,7 +32,7 @@ public class PermissionManager {
 
     static {
         permissionMap.put(MANAGE_USERS, Arrays.asList(OWNER));
-        permissionMap.put(MANAGE_PRODUCTS, Arrays.asList(OWNER, STORE_MANAGER));
+        permissionMap.put(MANAGE_PRODUCTS, Arrays.asList(OWNER));
         permissionMap.put(VIEW_PRODUCTS, Arrays.asList(OWNER, STORE_MANAGER, SHIFT_MANAGER, EMPLOYEE));
         permissionMap.put(CREATE_SALE, Arrays.asList(OWNER, STORE_MANAGER, SHIFT_MANAGER, EMPLOYEE));
         permissionMap.put(VIEW_SALES_HISTORY, Arrays.asList(OWNER, STORE_MANAGER, SHIFT_MANAGER));

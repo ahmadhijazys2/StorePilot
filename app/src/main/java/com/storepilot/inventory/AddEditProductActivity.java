@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.storepilot.R;
 import com.storepilot.core.BaseActivity;
+import com.storepilot.core.PermissionManager;
 import com.storepilot.db.entities.Product;
 import com.storepilot.viewmodels.ProductViewModel;
 
@@ -27,6 +28,12 @@ public class AddEditProductActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_edit_product);
+
+        if (!PermissionManager.currentUserHasPermission(PermissionManager.MANAGE_PRODUCTS)) {
+            Toast.makeText(this, "Only the Owner can add or edit products.", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
 
         etName = findViewById(R.id.etProductName);
         etCategory = findViewById(R.id.etProductCategory);
