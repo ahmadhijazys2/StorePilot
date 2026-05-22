@@ -112,20 +112,21 @@ public class RegisterActivity extends BaseActivity {
         String finalRole = role;
         String finalEmail = email;
         String finalPassword = password;
+        String finalUsername = username;
 
         AppDatabase.dbExecutor.execute(() -> {
             String salt = CryptoUtil.generateSalt();
             String hash = CryptoUtil.hashPassword(finalPassword, salt);
 
-            User newUser = new User(fullName, username, finalEmail, phone, hash, salt, finalRole,
+            User newUser = new User(fullName, finalUsername, finalEmail, phone, hash, salt, finalRole,
                     System.currentTimeMillis());
 
             try {
                 AppDatabase.getInstance(getApplication()).userDao().insert(newUser);
 
-                // Also register with Firebase Authentication if configured
+                // Register with Firebase Auth — email+password for login, username as displayName
                 FirebaseAuthHelper.init(getApplicationContext());
-                FirebaseAuthHelper.signUp(finalEmail, finalPassword, new FirebaseAuthHelper.AuthCallback() {
+                FirebaseAuthHelper.signUp(finalEmail, finalPassword, finalUsername, new FirebaseAuthHelper.AuthCallback() {
                     @Override
                     public void onSuccess(String uid) {
                         runOnUiThread(() -> {
@@ -137,7 +138,7 @@ public class RegisterActivity extends BaseActivity {
 
                     @Override
                     public void onFailure(String error) {
-                        // Firebase failed but local account was created — proceed anyway
+                        // Firebase failed — local account still created, proceed
                         runOnUiThread(() -> {
                             Toast.makeText(RegisterActivity.this, "Account created! Please sign in.", Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(RegisterActivity.this, LoginActivity.class));

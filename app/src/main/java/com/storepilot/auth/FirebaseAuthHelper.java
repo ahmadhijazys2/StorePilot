@@ -7,12 +7,8 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 
-/**
- * Handles Firebase Authentication using manual initialization.
- * This approach does NOT require google-services.json or the google-services Gradle plugin.
- * Fill in FirebaseConfig with your real project values to activate.
- */
 public class FirebaseAuthHelper {
 
     private static final String TAG = "FirebaseAuthHelper";
@@ -49,7 +45,11 @@ public class FirebaseAuthHelper {
         return firebaseAuth != null && !FirebaseConfig.API_KEY.startsWith("YOUR_");
     }
 
-    public static void signUp(String email, String password, AuthCallback callback) {
+    /**
+     * Creates a Firebase account then saves the username as displayName.
+     * Firebase Auth stores: email, password, displayName (= username)
+     */
+    public static void signUp(String email, String password, String username, AuthCallback callback) {
         if (!isConfigured()) {
             callback.onSuccess("local-only");
             return;
@@ -57,7 +57,17 @@ public class FirebaseAuthHelper {
         firebaseAuth.createUserWithEmailAndPassword(email, password)
                 .addOnSuccessListener(result -> {
                     FirebaseUser user = result.getUser();
-                    callback.onSuccess(user != null ? user.getUid() : "unknown");
+                    if (user == null) {
+                        callback.onSuccess("unknown");
+                        return;
+                    }
+                    // Save username as displayName in Firebase Auth
+                    UserProfileChangeRequest profileUpdate = new UserProfileChangeRequest.Builder()
+                            .setDisplayName(username)
+                            .build();
+                    user.updateProfile(profileUpdate)
+                            .addOnSuccessListener(unused -> callback.onSuccess(user.getUid()))
+                            .addOnFailureListener(e -> callback.onSuccess(user.getUid())); // still success, just profile update failed
                 })
                 .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
     }
@@ -73,6 +83,20 @@ public class FirebaseAuthHelper {
                     callback.onSuccess(user != null ? user.getUid() : "unknown");
                 })
                 .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+    }
+
+    /** Returns the username (displayName) of the currently logged-in Firebase user, or null */
+    public static String getCurrentUsername() {
+        if (!isConfigured()) return null;
+        FirebaseUser user = firebaseAuth.getCurrentUser();
+        return user != null ? user.getDisplayName() : null;
+    }
+
+    /** Returns the email of the currently logged-in Firebase user, or null */
+    public static String getCurrentEmail() {
+        if (!isConfigured()) return null;
+        FirebaseUser user = firebaseAuth.getCurrentUser();
+        return user != null ? user.getEmail() : null;
     }
 
     public static void signOut() {
