@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- Internet permission needed for future API or Firebase integration -->
     <uses-permission android:name="android.permission.INTERNET" />
-    <!-- Read storage for image attachments in support chat -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <!-- Required for sending notifications on Android 13+ -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- Required for AlarmManager to wake the device -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
 
     <application
         android:allowBackup="true"
@@ -82,6 +85,11 @@
         <!-- Task management screen -->
         <activity
             android:name=".tasks.AddEditTaskActivity"
+            android:exported="false" />
+
+        <!-- BroadcastReceiver for low-stock AlarmManager alerts -->
+        <receiver
+            android:name=".core.LowStockReceiver"
             android:exported="false" />
 
     </application>

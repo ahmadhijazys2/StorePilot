@@ -50,4 +50,8 @@ public interface ProductDao {
     // Count products with low stock (for dashboard alert)
     @Query("SELECT COUNT(*) FROM products WHERE quantity <= :threshold")
     LiveData<Integer> getLowStockCount(int threshold);
+
+    // Synchronous version used by LowStockReceiver on background thread
+    @Query("SELECT COUNT(*) FROM products WHERE quantity <= :threshold")
+    int getLowStockCountSync(int threshold);
 }

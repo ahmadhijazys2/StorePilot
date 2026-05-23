@@ -1,17 +1,27 @@
 package com.storepilot;
 
+import android.Manifest;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.storepilot.auth.LoginActivity;
 import com.storepilot.core.BaseActivity;
+import com.storepilot.core.LowStockReceiver;
+import com.storepilot.core.NotificationHelper;
 import com.storepilot.core.PermissionManager;
 import com.storepilot.core.SessionManager;
 import com.storepilot.dashboard.DashboardFragment;
@@ -41,6 +51,11 @@ public class MainActivity extends BaseActivity {
         }
 
         setContentView(R.layout.activity_main);
+
+        // Set up notification channel and schedule recurring low-stock check
+        NotificationHelper.createChannel(this);
+        requestNotificationPermission();
+        scheduleLowStockAlarm();
 
         bottomNavigationView = findViewById(R.id.bottomNavigation);
 
@@ -73,6 +88,33 @@ public class MainActivity extends BaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         return super.onCreateOptionsMenu(menu);
+    }
+
+    /** Asks for POST_NOTIFICATIONS permission on Android 13+ */
+    private void requestNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.POST_NOTIFICATIONS}, 100);
+            }
+        }
+    }
+
+    /** Schedules AlarmManager to check low stock every hour and send a notification if needed */
+    private void scheduleLowStockAlarm() {
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(this, LowStockReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                this, 0, intent,
+                PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
+
+        // Fire once immediately (after 5 seconds), then repeat every hour
+        alarmManager.setRepeating(
+                AlarmManager.RTC_WAKEUP,
+                System.currentTimeMillis() + 5_000,
+                AlarmManager.INTERVAL_HOUR,
+                pendingIntent);
     }
 
     private void loadFragment(Fragment fragment) {
