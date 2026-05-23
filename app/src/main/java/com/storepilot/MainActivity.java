@@ -23,10 +23,8 @@ import com.storepilot.core.SessionManager;
 import com.storepilot.dashboard.DashboardFragment;
 import com.storepilot.inventory.ProductListFragment;
 import com.storepilot.purchases.PurchaseHistoryFragment;
-import com.storepilot.marketing.VideoMetricsFragment;
-import com.storepilot.reports.ReportsFragment;
-import com.storepilot.sales.SalesHistoryFragment;
 import com.storepilot.seasons.SeasonListFragment;
+import com.storepilot.sales.SalesHistoryFragment;
 import com.storepilot.tasks.TaskListFragment;
 import com.storepilot.admin.UserManagementFragment;
 import com.storepilot.manager.OrderManagementFragment;
@@ -125,15 +123,11 @@ public class MainActivity extends BaseActivity {
         Menu menu = popupMenu.getMenu();
         menu.findItem(R.id.menu_purchases).setVisible(
                 checkPermission(PermissionManager.MANAGE_PURCHASES));
-        menu.findItem(R.id.menu_marketing).setVisible(
-                checkPermission(PermissionManager.VIEW_MARKETING));
-        menu.findItem(R.id.menu_reports).setVisible(
-                checkPermission(PermissionManager.VIEW_REPORTS));
         menu.findItem(R.id.menu_seasons).setVisible(
                 checkPermission(PermissionManager.MANAGE_SEASONS));
         menu.findItem(R.id.menu_admin).setVisible(
                 checkPermission(PermissionManager.VIEW_ADMIN));
-        // Test notification visible to owner and manager only
+        // Test notification visible to owner and store manager only
         menu.findItem(R.id.menu_test_notification).setVisible(
                 checkPermission(PermissionManager.VIEW_REPORTS));
 
@@ -141,10 +135,6 @@ public class MainActivity extends BaseActivity {
             int id = item.getItemId();
             if (id == R.id.menu_purchases) {
                 loadFragment(new PurchaseHistoryFragment());
-            } else if (id == R.id.menu_marketing) {
-                loadFragment(new VideoMetricsFragment());
-            } else if (id == R.id.menu_reports) {
-                loadFragment(new ReportsFragment());
             } else if (id == R.id.menu_seasons) {
                 loadFragment(new SeasonListFragment());
             } else if (id == R.id.menu_admin) {

@@ -35,7 +35,6 @@
         <activity android:name=".inventory.AddEditProductActivity" android:exported="false" />
         <activity android:name=".sales.AddSaleActivity" android:exported="false" />
         <activity android:name=".purchases.AddPurchaseActivity" android:exported="false" />
-        <activity android:name=".marketing.AddMetricActivity" android:exported="false" />
         <activity android:name=".seasons.AddEditSeasonActivity" android:exported="false" />
         <activity android:name=".tasks.AddEditTaskActivity" android:exported="false" />
 

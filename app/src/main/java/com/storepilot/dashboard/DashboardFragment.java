@@ -26,7 +26,7 @@ import java.util.Locale;
 public class DashboardFragment extends Fragment {
 
     private TextView tvSeasonAlert, tvTodaySales, tvLowStockCount, tvPendingTasks;
-    private TextView tvTodayOrders, tvTodayRevenue;
+    private TextView tvTodayOrders;
     private View cardSeasonAlert;
 
     @Nullable
@@ -46,7 +46,6 @@ public class DashboardFragment extends Fragment {
         tvLowStockCount = view.findViewById(R.id.tvLowStockCount);
         tvPendingTasks = view.findViewById(R.id.tvPendingTasks);
         tvTodayOrders = view.findViewById(R.id.tvTodayOrders);
-        tvTodayRevenue = view.findViewById(R.id.tvTodayRevenue);
 
         SeasonViewModel seasonVM = new ViewModelProvider(this).get(SeasonViewModel.class);
         SaleViewModel saleVM = new ViewModelProvider(this).get(SaleViewModel.class);
@@ -97,11 +96,6 @@ public class DashboardFragment extends Fragment {
         orderVM.getTodayOrderCount(startOfDay).observe(getViewLifecycleOwner(), count -> {
             if (tvTodayOrders != null)
                 tvTodayOrders.setText(String.valueOf(count != null ? count : 0));
-        });
-        orderVM.getTodayRevenue(startOfDay).observe(getViewLifecycleOwner(), revenue -> {
-            if (tvTodayRevenue != null)
-                tvTodayRevenue.setText(NumberFormat.getCurrencyInstance(Locale.US)
-                        .format(revenue != null ? revenue : 0.0));
         });
     }
 }
