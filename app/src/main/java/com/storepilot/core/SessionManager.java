@@ -1,5 +1,6 @@
 package com.storepilot.core;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.storepilot.db.entities.User;
 
 public class SessionManager {
@@ -10,32 +11,21 @@ public class SessionManager {
     private SessionManager() {}
 
     public static synchronized SessionManager getInstance() {
-        if (instance == null) {
-            instance = new SessionManager();
-        }
+        if (instance == null) instance = new SessionManager();
         return instance;
     }
 
-    public User getLoggedInUser() {
-        return loggedInUser;
-    }
-
-    public void setLoggedInUser(User user) {
-        this.loggedInUser = user;
-    }
-
-    public void logout() {
-        this.loggedInUser = null;
-    }
-
-    public boolean isLoggedIn() {
-        return loggedInUser != null;
-    }
+    public void setLoggedInUser(User user) { this.loggedInUser = user; }
+    public User getLoggedInUser()          { return loggedInUser; }
+    public boolean isLoggedIn()            { return loggedInUser != null; }
 
     public String getUserRole() {
-        if (loggedInUser != null) {
-            return loggedInUser.getRole();
-        }
-        return null;
+        return loggedInUser != null ? loggedInUser.getRole() : null;
+    }
+
+    /** Clears the local session and signs out of Firebase Authentication */
+    public void logout() {
+        loggedInUser = null;
+        FirebaseAuth.getInstance().signOut();
     }
 }

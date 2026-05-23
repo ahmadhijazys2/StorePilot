@@ -2,9 +2,9 @@ package com.storepilot.customer;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.MenuItem;
+import android.widget.ImageButton;
 
-import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
@@ -13,7 +13,6 @@ import com.storepilot.R;
 import com.storepilot.auth.LoginActivity;
 import com.storepilot.core.SessionManager;
 
-// Main activity for customers — hosts the bottom navigation and fragment container
 public class CustomerMainActivity extends AppCompatActivity {
 
     private BottomNavigationView bottomNav;
@@ -25,35 +24,40 @@ public class CustomerMainActivity extends AppCompatActivity {
 
         bottomNav = findViewById(R.id.customerBottomNav);
 
-        // Load the home fragment by default
+        // Logout button in toolbar
+        ImageButton btnLogout = findViewById(R.id.btnCustomerLogout);
+        btnLogout.setOnClickListener(v -> showLogoutDialog());
+
         if (savedInstanceState == null) {
             loadFragment(new CustomerHomeFragment());
         }
 
-        // Handle bottom navigation tab switching
         bottomNav.setOnItemSelectedListener(item -> {
             int id = item.getItemId();
             if (id == R.id.nav_customer_home) {
-                loadFragment(new CustomerHomeFragment());
-                return true;
+                loadFragment(new CustomerHomeFragment()); return true;
             } else if (id == R.id.nav_customer_cart) {
-                loadFragment(new CartFragment());
-                return true;
+                loadFragment(new CartFragment()); return true;
             } else if (id == R.id.nav_customer_orders) {
-                loadFragment(new OrderHistoryFragment());
-                return true;
+                loadFragment(new OrderHistoryFragment()); return true;
             } else if (id == R.id.nav_customer_favorites) {
-                loadFragment(new FavoritesFragment());
-                return true;
+                loadFragment(new FavoritesFragment()); return true;
             } else if (id == R.id.nav_customer_support) {
-                loadFragment(new SupportChatFragment());
-                return true;
+                loadFragment(new SupportChatFragment()); return true;
             }
             return false;
         });
     }
 
-    // Replace the main container with a new fragment
+    private void showLogoutDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle("Sign Out")
+                .setMessage("Are you sure you want to sign out?")
+                .setPositiveButton("Sign Out", (d, w) -> logout())
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
     private void loadFragment(Fragment fragment) {
         getSupportFragmentManager()
                 .beginTransaction()
@@ -61,10 +65,11 @@ public class CustomerMainActivity extends AppCompatActivity {
                 .commit();
     }
 
-    // Log out and return to login screen
     public void logout() {
-        SessionManager.getInstance().logout();
-        startActivity(new Intent(this, LoginActivity.class));
+        SessionManager.getInstance().logout(); // also calls FirebaseAuth.signOut()
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
         finish();
     }
 }
