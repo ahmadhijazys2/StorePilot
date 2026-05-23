@@ -5,6 +5,7 @@ import android.app.Application;
 import androidx.lifecycle.LiveData;
 
 import com.storepilot.core.AppDatabase;
+import com.storepilot.core.FirestoreManager;
 import com.storepilot.db.dao.UserDao;
 import com.storepilot.db.entities.User;
 
@@ -19,37 +20,27 @@ public class UserRepository {
         userDao = db.userDao();
     }
 
-    public LiveData<List<User>> getAllUsers() {
-        return userDao.getAllUsers();
-    }
+    public LiveData<List<User>> getAllUsers() { return userDao.getAllUsers(); }
+    public User findByUsername(String username) { return userDao.findByUsername(username); }
+    public User findByEmail(String email) { return userDao.findByEmail(email); }
+    public int getOwnerCount() { return userDao.getOwnerCount(); }
+    public int getUserCountSync() { return userDao.getUserCountSync(); }
 
     public void insert(User user) {
-        AppDatabase.dbExecutor.execute(() -> userDao.insert(user));
+        AppDatabase.dbExecutor.execute(() -> {
+            userDao.insert(user);
+            FirestoreManager.saveUser(user);
+        });
     }
 
     public void update(User user) {
-        AppDatabase.dbExecutor.execute(() -> userDao.update(user));
+        AppDatabase.dbExecutor.execute(() -> {
+            userDao.update(user);
+            FirestoreManager.saveUser(user);
+        });
     }
 
     public void delete(User user) {
         AppDatabase.dbExecutor.execute(() -> userDao.delete(user));
-    }
-
-    public User findByUsername(String username) {
-        return userDao.findByUsername(username);
-    }
-
-    public int getOwnerCount() {
-        return userDao.getOwnerCount();
-    }
-
-    // Returns total user count synchronously (for setup check on background thread)
-    public int getUserCountSync() {
-        return userDao.getUserCountSync();
-    }
-
-    // Find user by email address (used for email-based login)
-    public User findByEmail(String email) {
-        return userDao.findByEmail(email);
     }
 }

@@ -1,5 +1,6 @@
 plugins {
     id 'com.android.application'
+    id 'com.google.gms.google-services'
 }
 
 android {
@@ -63,6 +64,8 @@ dependencies {
     // Fragment
     implementation 'androidx.fragment:fragment:1.6.2'
 
-    // Firebase Authentication (manual init — no google-services.json required at build time)
-    implementation 'com.google.firebase:firebase-auth:22.3.1'
+    // Firebase (BOM manages all versions)
+    implementation platform('com.google.firebase:firebase-bom:32.7.4')
+    implementation 'com.google.firebase:firebase-auth'
+    implementation 'com.google.firebase:firebase-firestore'
 }

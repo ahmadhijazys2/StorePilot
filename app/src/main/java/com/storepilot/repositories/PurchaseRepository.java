@@ -5,6 +5,7 @@ import android.app.Application;
 import androidx.lifecycle.LiveData;
 
 import com.storepilot.core.AppDatabase;
+import com.storepilot.core.FirestoreManager;
 import com.storepilot.db.dao.PurchaseDao;
 import com.storepilot.db.entities.Purchase;
 
@@ -19,24 +20,22 @@ public class PurchaseRepository {
         purchaseDao = db.purchaseDao();
     }
 
-    public LiveData<List<Purchase>> getAllPurchases() {
-        return purchaseDao.getAllPurchases();
-    }
-
-    public LiveData<Purchase> getById(int id) {
-        return purchaseDao.getById(id);
-    }
-
-    public LiveData<List<Purchase>> getPurchasesByDateRange(long startDate, long endDate) {
-        return purchaseDao.getPurchasesByDateRange(startDate, endDate);
-    }
+    public LiveData<List<Purchase>> getAllPurchases() { return purchaseDao.getAllPurchases(); }
+    public LiveData<Purchase> getById(int id) { return purchaseDao.getById(id); }
+    public LiveData<List<Purchase>> getPurchasesByDateRange(long startDate, long endDate) { return purchaseDao.getPurchasesByDateRange(startDate, endDate); }
 
     public void insert(Purchase purchase) {
-        AppDatabase.dbExecutor.execute(() -> purchaseDao.insert(purchase));
+        AppDatabase.dbExecutor.execute(() -> {
+            purchaseDao.insert(purchase);
+            FirestoreManager.savePurchase(purchase);
+        });
     }
 
     public void update(Purchase purchase) {
-        AppDatabase.dbExecutor.execute(() -> purchaseDao.update(purchase));
+        AppDatabase.dbExecutor.execute(() -> {
+            purchaseDao.update(purchase);
+            FirestoreManager.savePurchase(purchase);
+        });
     }
 
     public void delete(Purchase purchase) {

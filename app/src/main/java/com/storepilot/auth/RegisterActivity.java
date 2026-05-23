@@ -125,7 +125,6 @@ public class RegisterActivity extends BaseActivity {
                 AppDatabase.getInstance(getApplication()).userDao().insert(newUser);
 
                 // Register with Firebase Auth — email+password for login, username as displayName
-                FirebaseAuthHelper.init(getApplicationContext());
                 FirebaseAuthHelper.signUp(finalEmail, finalPassword, finalUsername, new FirebaseAuthHelper.AuthCallback() {
                     @Override
                     public void onSuccess(String uid) {
