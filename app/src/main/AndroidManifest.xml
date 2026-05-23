@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- Internet permission needed for future API or Firebase integration -->
     <uses-permission android:name="android.permission.INTERNET" />
-    <!-- Read storage for image attachments in support chat -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <!-- Required for showing notifications on Android 13+ -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- Required for AlarmManager to survive device reboots -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
+        android:name=".StorePilotApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -14,7 +17,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.StorePilot">
 
-        <!-- Welcome screen is now the launcher (entry point) -->
         <activity
             android:name=".auth.WelcomeActivity"
             android:exported="true">
@@ -24,64 +26,22 @@
             </intent-filter>
         </activity>
 
-        <!-- Login screen -->
-        <activity
-            android:name=".auth.LoginActivity"
-            android:exported="false" />
+        <activity android:name=".auth.LoginActivity" android:exported="false" />
+        <activity android:name=".auth.RegisterActivity" android:exported="false" />
+        <activity android:name=".auth.RoleSelectionActivity" android:exported="false" />
+        <activity android:name=".auth.SetupActivity" android:exported="false" />
+        <activity android:name=".MainActivity" android:exported="false" />
+        <activity android:name=".customer.CustomerMainActivity" android:exported="false" />
+        <activity android:name=".inventory.AddEditProductActivity" android:exported="false" />
+        <activity android:name=".sales.AddSaleActivity" android:exported="false" />
+        <activity android:name=".purchases.AddPurchaseActivity" android:exported="false" />
+        <activity android:name=".marketing.AddMetricActivity" android:exported="false" />
+        <activity android:name=".seasons.AddEditSeasonActivity" android:exported="false" />
+        <activity android:name=".tasks.AddEditTaskActivity" android:exported="false" />
 
-        <!-- Registration screen (new) -->
-        <activity
-            android:name=".auth.RegisterActivity"
-            android:exported="false" />
-
-        <!-- Role selection screen (shown after Sign Up) -->
-        <activity
-            android:name=".auth.RoleSelectionActivity"
-            android:exported="false" />
-
-        <!-- First-time owner setup screen -->
-        <activity
-            android:name=".auth.SetupActivity"
-            android:exported="false" />
-
-        <!-- Manager/Owner main app -->
-        <activity
-            android:name=".MainActivity"
-            android:exported="false" />
-
-        <!-- Customer store app (new) -->
-        <activity
-            android:name=".customer.CustomerMainActivity"
-            android:exported="false" />
-
-        <!-- Product management screen -->
-        <activity
-            android:name=".inventory.AddEditProductActivity"
-            android:exported="false" />
-
-        <!-- Sales entry screen -->
-        <activity
-            android:name=".sales.AddSaleActivity"
-            android:exported="false" />
-
-        <!-- Purchase entry screen -->
-        <activity
-            android:name=".purchases.AddPurchaseActivity"
-            android:exported="false" />
-
-        <!-- Marketing metric screen -->
-        <activity
-            android:name=".marketing.AddMetricActivity"
-            android:exported="false" />
-
-        <!-- Season management screen -->
-        <activity
-            android:name=".seasons.AddEditSeasonActivity"
-            android:exported="false" />
-
-        <!-- Task management screen -->
-        <activity
-            android:name=".tasks.AddEditTaskActivity"
+        <!-- BroadcastReceiver triggered by AlarmManager for low-stock checks -->
+        <receiver
+            android:name=".core.LowStockReceiver"
             android:exported="false" />
 
     </application>

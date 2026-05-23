@@ -9,4 +9,6 @@
     <item android:id="@+id/menu_seasons" android:title="Seasons" />
     <item android:id="@+id/menu_admin" android:title="Admin" />
     <item android:id="@+id/menu_logout" android:title="@string/logout" />
+    <!-- Test mode: fires the low-stock check immediately without waiting for the alarm -->
+    <item android:id="@+id/menu_test_notification" android:title="Test Notification" />
 </menu>
