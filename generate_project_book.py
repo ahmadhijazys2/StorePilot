@@ -306,12 +306,12 @@ def build_toc(styles):
             ('29', 'Known Limitations'),
         ]),
         ('Implementation (Source Code)', [
-            ('31',  'Models — User, Product, Order, CartItem, Sale, Purchase, Task, Season, SupportMessage, Favorite, VideoMetric'),
+            ('31',  'Models — User, Product, Order, OrderItem, CartItem, Sale, Task, Season, SupportMessage, Favorite'),
             ('38',  'Core & Authentication — AppDatabase, SessionManager, CryptoUtil, Auth Activities & ViewModels'),
             ('55',  'Products & Cart — DAOs, Repositories, ViewModels, Fragments, Activities'),
             ('80',  'Adapters — All RecyclerView Adapters'),
             ('100', 'Tasks & Support — Task & Support DAOs, Repos, ViewModels, Fragments'),
-            ('125', 'Utilities & System — App Entry, Notifications, Permissions, Sales, Purchases, Seasons, Dashboard'),
+            ('125', 'Utilities & System — App Entry, Notifications, Permissions, Sales, Seasons, Dashboard'),
         ]),
         ('Conclusion & Appendices', [
             ('148', 'Self-Reflection'),
@@ -353,8 +353,8 @@ def build_intro(styles):
         sp(2),
         body('The project demonstrates a production-quality MVVM architecture on Android, '
              'including role-based access control, a full shopping cart & checkout flow, '
-             'real-time support chat, task management, inventory control, sales & purchase '
-             'history, and season-aware dashboard alerts.', styles, True),
+             'real-time support chat, task management, inventory control, sales history, '
+             'and season-aware dashboard alerts.', styles, True),
         sp(3),
         sub('Core Features', styles),
     ]
@@ -367,7 +367,7 @@ def build_intro(styles):
         'Real-time support chat between customers and store staff',
         'Task management with priority levels (LOW / MEDIUM / HIGH) and private tasks',
         'Inventory management: add, edit, delete products with live low-stock alerts',
-        'Sales and purchase history with date-range SQL queries',
+        'Sales history with date-range SQL queries',
         'Season management with end-date alerts on the dashboard',
         'Firebase Authentication (optional) + Firestore low-stock push notification',
         'LiveData + ViewModel — reactive UI that survives screen rotation',
@@ -475,16 +475,15 @@ def build_project_structure(styles):
         "│   └── LowStockReceiver.java    ← BroadcastReceiver for stock alerts\n"
         "│\n"
         "├── db/\n"
-        "│   ├── entities/                ← Room @Entity classes (12 tables)\n"
+        "│   ├── entities/                ← Room @Entity classes (10 tables)\n"
         "│   │   ├── User.java\n"
         "│   │   ├── Product.java\n"
         "│   │   ├── Order.java / OrderItem.java\n"
         "│   │   ├── CartItem.java / Favorite.java\n"
-        "│   │   ├── Sale.java / Purchase.java\n"
+        "│   │   ├── Sale.java\n"
         "│   │   ├── Task.java / Season.java\n"
-        "│   │   ├── SupportMessage.java\n"
-        "│   │   └── VideoMetric.java\n"
-        "│   └── dao/                     ← Room @Dao interfaces (12 DAOs)\n"
+        "│   │   └── SupportMessage.java\n"
+        "│   └── dao/                     ← Room @Dao interfaces (9 DAOs)\n"
         "│\n"
         "├── repositories/                ← Data layer — wraps DAOs, runs on dbExecutor\n"
         "├── viewmodels/                  ← Lifecycle-aware UI state\n"
@@ -503,7 +502,6 @@ def build_project_structure(styles):
         "├── dashboard/     ← KPI dashboard fragment\n"
         "├── admin/         ← User management (OWNER only)\n"
         "├── sales/         ← Sales history + AddSaleActivity\n"
-        "├── purchases/     ← Purchase history + AddPurchaseActivity\n"
         "├── seasons/       ← Season list + AddEditSeasonActivity\n"
         "└── tasks/         ← Task list + AddEditTaskActivity"
     )
@@ -561,11 +559,9 @@ def build_db_schema(styles):
         ('cart_items',       'id, customerId(FK), productId(FK), quantity'),
         ('favorites',        'id, customerId(FK), productId(FK), addedAt'),
         ('sales',            'id, productId(FK), quantity, totalPrice, saleDate, soldBy(FK), notes'),
-        ('purchases',        'id, productId(FK), quantity, totalCost, purchaseDate, purchasedBy(FK), supplier, notes'),
         ('tasks',            'id, title, description, assignedTo(FK), createdBy(FK), status, priority, isPrivate, dueDate, createdAt'),
         ('seasons',          'id, name, startDate, endDate, alertDaysBeforeEnd, isActive, notes'),
         ('support_messages', 'id, senderId(FK), senderRole, messageText, imageUrl, timestamp, customerId(FK), isRead'),
-        ('video_metrics',    'id, title, platform, views, likes, shares, comments, videoDate, recordedBy(FK)'),
     ]
     hs = ParagraphStyle('TH5', fontName='Helvetica-Bold', fontSize=9,
                         textColor=WHITE, alignment=TA_CENTER, leading=13)
@@ -590,7 +586,7 @@ def build_db_schema(styles):
     elems.append(t)
     elems.append(sp(3))
     elems.append(body('<b>Key:</b> * = unique index   (FK) = foreign key with ON DELETE SET NULL   '
-                      'Database version: 2   fallbackToDestructiveMigration() enabled for development', styles))
+                      'Database version: 2   10 tables   fallbackToDestructiveMigration() enabled for development', styles))
     elems.append(PageBreak())
     return elems
 
@@ -1023,7 +1019,6 @@ def build_user_guide(styles):
         'Session is in-memory — SessionManager holds the user in RAM. Killing the process logs the user out (no persistent token).',
         'Demo seed data is not idempotent — calling seedDemoData() more than once inserts duplicate rows.',
         'No pagination — all queries return the full result set. Large datasets may slow the UI.',
-        'VideoMetric entity is included in the schema but no UI fragment exposes it in the current release.',
         'fallbackToDestructiveMigration drops and rebuilds the database on schema changes — not suitable for production without proper migrations.',
     ]:
         elems.append(Paragraph(f'• {lim}', styles['bullet']))
@@ -1036,7 +1031,7 @@ def build_user_guide(styles):
 def build_models(styles):
     elems = section_divider('Implementation (Source Code)', styles)
     elems += page_header(31, 'Models — Room @Entity Classes', styles,
-                         'db/entities/ — 12 domain model classes')
+                         'db/entities/ — 10 domain model classes')
     elems.append(body(
         'All model classes are plain Java objects annotated with Room\'s @Entity, '
         '@PrimaryKey, and @ForeignKey annotations. Room generates the SQLite CREATE TABLE '
@@ -1050,12 +1045,10 @@ def build_models(styles):
         ('db/entities/OrderItem.java',      'db/entities/OrderItem.java'),
         ('db/entities/CartItem.java',       'db/entities/CartItem.java'),
         ('db/entities/Sale.java',           'db/entities/Sale.java'),
-        ('db/entities/Purchase.java',       'db/entities/Purchase.java'),
         ('db/entities/Task.java',           'db/entities/Task.java'),
         ('db/entities/Season.java',         'db/entities/Season.java'),
         ('db/entities/SupportMessage.java', 'db/entities/SupportMessage.java'),
         ('db/entities/Favorite.java',       'db/entities/Favorite.java'),
-        ('db/entities/VideoMetric.java',    'db/entities/VideoMetric.java'),
     ]:
         elems += code_block(read_src(path), fname, styles)
     elems.append(PageBreak())
@@ -1066,7 +1059,7 @@ def build_core_auth(styles):
     elems = page_header(38, 'Core & Authentication', styles,
                         'core/ + auth/ — database, session, crypto, activities, ViewModels')
     elems.append(body(
-        'Core infrastructure: the Room database singleton with 12-table schema and '
+        'Core infrastructure: the Room database singleton with 10-table schema and '
         'seed data, in-memory session management, PBKDF2/SHA-256 password hashing, '
         'role-based permission system, and all authentication activities/ViewModels.', styles))
     elems.append(sp(2))
@@ -1146,7 +1139,6 @@ def build_adapters(styles):
         ('tasks/TaskAdapter.java',                        'tasks/TaskAdapter.java'),
         ('seasons/SeasonAdapter.java',                    'seasons/SeasonAdapter.java'),
         ('sales/SaleAdapter.java',                        'sales/SaleAdapter.java'),
-        ('purchases/PurchaseAdapter.java',                'purchases/PurchaseAdapter.java'),
         ('manager/ConversationListAdapter.java',          'manager/ConversationListAdapter.java'),
         ('admin/UserAdapter.java',                        'admin/UserAdapter.java'),
     ]:
@@ -1183,10 +1175,10 @@ def build_tasks_support(styles):
 
 def build_utilities(styles):
     elems = page_header(125, 'Utilities & System', styles,
-                        'App entry, notifications, dashboard, sales, purchases, seasons')
+                        'App entry, notifications, dashboard, sales, seasons')
     elems.append(body(
         'Application entry points, system utilities (AlarmManager, BroadcastReceiver, '
-        'NotificationManager), the management dashboard, and the sales/purchase/season '
+        'NotificationManager), the management dashboard, and the sales and season '
         'history modules. Includes the full Gradle build configuration.', styles))
     elems.append(sp(2))
     for fname, path in [
@@ -1198,19 +1190,13 @@ def build_utilities(styles):
         ('dashboard/DashboardFragment.java',  'dashboard/DashboardFragment.java'),
         ('admin/UserManagementFragment.java', 'admin/UserManagementFragment.java'),
         ('db/dao/SaleDao.java',               'db/dao/SaleDao.java'),
-        ('db/dao/PurchaseDao.java',           'db/dao/PurchaseDao.java'),
         ('db/dao/SeasonDao.java',             'db/dao/SeasonDao.java'),
-        ('db/dao/VideoMetricDao.java',        'db/dao/VideoMetricDao.java'),
         ('repositories/SaleRepository.java',  'repositories/SaleRepository.java'),
-        ('repositories/PurchaseRepository.java','repositories/PurchaseRepository.java'),
         ('repositories/SeasonRepository.java','repositories/SeasonRepository.java'),
         ('viewmodels/SaleViewModel.java',     'viewmodels/SaleViewModel.java'),
-        ('viewmodels/PurchaseViewModel.java', 'viewmodels/PurchaseViewModel.java'),
         ('viewmodels/SeasonViewModel.java',   'viewmodels/SeasonViewModel.java'),
         ('sales/SalesHistoryFragment.java',   'sales/SalesHistoryFragment.java'),
         ('sales/AddSaleActivity.java',        'sales/AddSaleActivity.java'),
-        ('purchases/PurchaseHistoryFragment.java','purchases/PurchaseHistoryFragment.java'),
-        ('purchases/AddPurchaseActivity.java','purchases/AddPurchaseActivity.java'),
         ('seasons/SeasonListFragment.java',   'seasons/SeasonListFragment.java'),
         ('seasons/AddEditSeasonActivity.java','seasons/AddEditSeasonActivity.java'),
         ('manager/OrderManagementFragment.java','manager/OrderManagementFragment.java'),
@@ -1300,10 +1286,8 @@ def build_conclusion(styles):
         ('VIEW_PRODUCTS',       'v', 'v', 'v', 'v'),
         ('CREATE_SALE',         'v', 'v', 'v', 'v'),
         ('VIEW_SALES_HISTORY',  'v', 'v', 'v', ''),
-        ('MANAGE_PURCHASES',    'v', 'v', '',  ''),
         ('VIEW_REPORTS',        'v', 'v', '',  ''),
         ('MANAGE_SEASONS',      'v', 'v', '',  ''),
-        ('VIEW_MARKETING',      'v', 'v', '',  ''),
         ('CREATE_PRIVATE_TASK', 'v', 'v', 'v', 'v'),
         ('VIEW_TEAM_TASKS',     'v', 'v', 'v', ''),
         ('MANAGE_TASKS',        'v', 'v', '',  ''),
