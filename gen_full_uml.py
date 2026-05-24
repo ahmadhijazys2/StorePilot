@@ -29,18 +29,19 @@ C_DARK    = '#212121'
 C_GREY    = '#757575'
 
 FW, FH = 34, 28
+S = 1.5   # scale factor — enlarges figure size and all font sizes
 
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
-def box(ax, x, y, w, h, title, attrs, hc, bc, fs=6.0, ts=7.2):
+def box(ax, x, y, w, h, title, attrs, hc, bc, fs=6.0*S, ts=7.2*S):
     ax.add_patch(FancyBboxPatch((x, y), w, h, boxstyle='round,pad=0.03',
-                                facecolor=bc, edgecolor=hc, linewidth=0.9, zorder=2))
+                                facecolor=bc, edgecolor=hc, linewidth=0.9*S, zorder=2))
     hh = max(h * 0.20, 0.30)
     ax.add_patch(FancyBboxPatch((x, y+h-hh), w, hh, boxstyle='round,pad=0.02',
-                                facecolor=hc, edgecolor=hc, linewidth=0.9, zorder=3))
+                                facecolor=hc, edgecolor=hc, linewidth=0.9*S, zorder=3))
     ax.text(x+w/2, y+h-hh/2, title, ha='center', va='center',
             fontsize=ts, fontweight='bold', color='white', zorder=4)
-    ax.plot([x, x+w], [y+h-hh, y+h-hh], color=hc, lw=0.6, zorder=4)
+    ax.plot([x, x+w], [y+h-hh, y+h-hh], color=hc, lw=0.6*S, zorder=4)
     if attrs:
         row = (h - hh - 0.06) / len(attrs)
         for i, a in enumerate(attrs):
@@ -54,12 +55,12 @@ def arr(ax, x1, y1, x2, y2, color, lw=1.0, label='', rad=0.0,
     ax.annotate('', xy=(x2, y2), xytext=(x1, y1),
                 arrowprops=dict(arrowstyle=style, color=color, lw=lw,
                                 connectionstyle=f'arc3,rad={rad}',
-                                mutation_scale=9))
+                                mutation_scale=9*S))
     if label:
         mx, my = (x1+x2)/2, (y1+y2)/2
         dy = 0.10 if lbl_side == 'top' else -0.16
         ax.text(mx, my+dy, label, ha='center', va='center',
-                fontsize=5.5, color=color, fontstyle='italic',
+                fontsize=5.5*S, color=color, fontstyle='italic',
                 bbox=dict(facecolor='white', edgecolor='none', alpha=0.85, pad=0.5))
 
 
@@ -68,16 +69,16 @@ def dash_arr(ax, x1, y1, x2, y2, color, lw=0.8):
                 arrowprops=dict(arrowstyle='->', color=color, lw=lw,
                                 linestyle='dashed',
                                 connectionstyle='arc3,rad=0',
-                                mutation_scale=7))
+                                mutation_scale=7*S))
 
 
 def ui_link(ax, fx, fy, vx, vy, rad=0.0):
     """Dotted arrow: Activity/Fragment (bottom) → ViewModel (top)."""
     ax.annotate('', xy=(vx, vy), xytext=(fx, fy),
-                arrowprops=dict(arrowstyle='->', color=C_UI, lw=0.65,
+                arrowprops=dict(arrowstyle='->', color=C_UI, lw=0.65*S,
                                 linestyle='dotted',
                                 connectionstyle=f'arc3,rad={rad}',
-                                mutation_scale=6))
+                                mutation_scale=6*S))
 
 
 def hline(ax, y, color=C_GOLD, lw=1.5, ls='--'):
@@ -85,12 +86,12 @@ def hline(ax, y, color=C_GOLD, lw=1.5, ls='--'):
 
 
 def sec(ax, x, y, text, color):
-    ax.text(x, y, f'▶  {text}', fontsize=9.5, fontweight='bold', color=color)
+    ax.text(x, y, f'▶  {text}', fontsize=9.5*S, fontweight='bold', color=color)
 
 
 # ═════════════════════════════════════════════════════════════════════════════
 def build():
-    fig, ax = plt.subplots(figsize=(FW, FH))
+    fig, ax = plt.subplots(figsize=(FW*S, FH*S))
     ax.set_xlim(0, FW)
     ax.set_ylim(0, FH)
     ax.axis('off')
@@ -98,10 +99,10 @@ def build():
 
     # Title
     ax.text(FW/2, FH-0.45, 'StorePilot — UML Class Diagram',
-            ha='center', fontsize=22, fontweight='bold', color=C_ENTITY)
+            ha='center', fontsize=22*S, fontweight='bold', color=C_ENTITY)
     ax.text(FW/2, FH-1.0,
             'Entities · DAOs · Repositories · ViewModels · Core/Helpers · Activities & Fragments',
-            ha='center', fontsize=10, color=C_GREY)
+            ha='center', fontsize=10*S, color=C_GREY)
     hline(ax, FH-1.35, C_GOLD, lw=2.5, ls='-')
 
     # ══════════════════════════════════════════════════════════════════════
@@ -285,7 +286,7 @@ def build():
           'markAllAsRead(cId)']),
     ]
     for (dx, name, attrs) in daos:
-        box(ax, dx, DY-DH, DW, DH, name, attrs, C_DAO, C_DAO_BG, fs=5.7, ts=7.0)
+        box(ax, dx, DY-DH, DW, DH, name, attrs, C_DAO, C_DAO_BG, fs=5.7*S, ts=7.0*S)
 
     hline(ax, DY-DH-0.28)
 
@@ -349,7 +350,7 @@ def build():
           'markAllRead(cId)']),
     ]
     for (rx, name, attrs) in repos:
-        box(ax, rx, RY-RH, RW, RH, name, attrs, C_REPO, C_REPO_BG, fs=5.7, ts=7.0)
+        box(ax, rx, RY-RH, RW, RH, name, attrs, C_REPO, C_REPO_BG, fs=5.7*S, ts=7.0*S)
 
     # Repo → DAO dashed arrows (straight vertical)
     rd_map = [
@@ -426,7 +427,7 @@ def build():
           'markRead(cId)']),
     ]
     for (vx, name, attrs) in vms:
-        box(ax, vx, VY-VH, VW, VH, name, attrs, C_VM, C_VM_BG, fs=5.7, ts=7.0)
+        box(ax, vx, VY-VH, VW, VH, name, attrs, C_VM, C_VM_BG, fs=5.7*S, ts=7.0*S)
 
     # VM → Repo arrows (straight vertical)
     for (vx, rx) in [(0.35,0.35),(4.05,4.05),(7.75,7.75),(11.45,11.45),
@@ -496,7 +497,7 @@ def build():
           'getAuth(): FirebaseAuth']),
     ]
     for (cx, name, attrs) in cores:
-        box(ax, cx, CY-CH, CW, CH, name, attrs, C_CORE, C_CORE_BG, fs=5.6, ts=7.0)
+        box(ax, cx, CY-CH, CW, CH, name, attrs, C_CORE, C_CORE_BG, fs=5.6*S, ts=7.0*S)
 
     hline(ax, CY-CH-0.28)
 
@@ -549,7 +550,7 @@ def build():
           'SessionManager.getLoggedInUser()']),
     ]
     for (ax2, name, attrs) in auth:
-        box(ax, ax2, AY-AH-0.25, AW, AH, name, attrs, C_ACT, C_ACT_BG, fs=5.6, ts=7.0)
+        box(ax, ax2, AY-AH-0.25, AW, AH, name, attrs, C_ACT, C_ACT_BG, fs=5.6*S, ts=7.0*S)
 
     hline(ax, AY-AH-0.55, '#90A4AE', lw=1.0, ls=':')
 
@@ -602,7 +603,7 @@ def build():
           'markAllRead on open']),
     ]
     for (fx, name, attrs) in cust:
-        box(ax, fx, FY-FH2-0.05, FW2, FH2, name, attrs, C_FRAG, C_ACT_BG, fs=5.6, ts=7.0)
+        box(ax, fx, FY-FH2-0.05, FW2, FH2, name, attrs, C_FRAG, C_ACT_BG, fs=5.6*S, ts=7.0*S)
 
     hline(ax, FY-FH2-0.35, '#90A4AE', lw=1.0, ls=':')
 
@@ -655,7 +656,7 @@ def build():
           'isActive toggle']),
     ]
     for (mx, name, attrs) in mgr:
-        box(ax, mx, MY-MH-0.05, FW2, MH, name, attrs, '#546E7A', C_ACT_BG, fs=5.6, ts=7.0)
+        box(ax, mx, MY-MH-0.05, FW2, MH, name, attrs, '#546E7A', C_ACT_BG, fs=5.6*S, ts=7.0*S)
 
     hline(ax, MY-MH-0.35, '#90A4AE', lw=1.0, ls=':')
 
@@ -695,7 +696,7 @@ def build():
           'isActive checkbox']),
     ]
     for (sx, name, attrs) in supp:
-        box(ax, sx, SY-SH-0.05, FW2, SH, name, attrs, '#455A64', C_ACT_BG, fs=5.6, ts=7.0)
+        box(ax, sx, SY-SH-0.05, FW2, SH, name, attrs, '#455A64', C_ACT_BG, fs=5.6*S, ts=7.0*S)
 
     # ══════════════════════════════════════════════════════════════════════
     # 7.  Activity / Fragment → ViewModel  (dotted blue arrows)
@@ -748,7 +749,7 @@ def build():
 
     # ── Legend (top-right) ────────────────────────────────────────────────
     lx, ly = FW - 4.8, FH - 1.55
-    ax.text(lx, ly, 'Colour Legend', fontsize=9, fontweight='bold', color=C_DARK)
+    ax.text(lx, ly, 'Colour Legend', fontsize=9*S, fontweight='bold', color=C_DARK)
     legend = [
         (C_ENTITY, C_BODY,    'Entity (@Room @Entity)'),
         (C_DAO,    C_DAO_BG,  'DAO (@Dao interface)'),
@@ -763,9 +764,9 @@ def build():
             boxstyle='round,pad=0.03', facecolor=bc,
             edgecolor=hc, linewidth=1.2, zorder=3))
         ax.text(lx + 0.72, ly - 0.44*(i+1) + 0.15, lbl,
-                fontsize=7.5, va='center', color=C_DARK)
+                fontsize=7.5*S, va='center', color=C_DARK)
 
-    ax.text(lx, ly - 0.44*7 - 0.15, 'Arrow Legend', fontsize=9, fontweight='bold', color=C_DARK)
+    ax.text(lx, ly - 0.44*7 - 0.15, 'Arrow Legend', fontsize=9*S, fontweight='bold', color=C_DARK)
     algs = [
         (C_ENTITY, '-',       '──▶  Entity FK (1:N)'),
         (C_REPO,   'dashed',  '- - ▶  Repo uses DAO'),
@@ -777,7 +778,7 @@ def build():
         ax.plot([lx, lx+0.55], [ay0, ay0], color=c, lw=1.5, linestyle=ls)
         ax.annotate('', xy=(lx+0.57, ay0), xytext=(lx+0.53, ay0),
                     arrowprops=dict(arrowstyle='->', color=c, lw=1.2, mutation_scale=8))
-        ax.text(lx + 0.72, ay0, lbl[5:], fontsize=7, va='center', color=c)
+        ax.text(lx + 0.72, ay0, lbl[5:], fontsize=7*S, va='center', color=c)
 
     plt.tight_layout(rect=[0, 0, 1, 1])
     out = '/home/user/StorePilot/uml_diagram.png'
