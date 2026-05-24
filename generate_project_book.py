@@ -5,13 +5,14 @@ Generates a comprehensive PDF documentation book modelled on the FaceCare format
 """
 
 import os
-from reportlab.lib.pagesizes import A4
+from reportlab.lib.pagesizes import A4, landscape as rl_landscape
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import cm, mm
 from reportlab.lib import colors
 from reportlab.platypus import (
     SimpleDocTemplate, Paragraph, Spacer, PageBreak,
-    Table, TableStyle, KeepTogether, HRFlowable, Image
+    Table, TableStyle, KeepTogether, HRFlowable, Image,
+    BaseDocTemplate, PageTemplate, Frame, NextPageTemplate
 )
 from reportlab.lib.enums import TA_LEFT, TA_CENTER, TA_RIGHT, TA_JUSTIFY
 from reportlab.pdfgen import canvas as pdfcanvas
@@ -133,6 +134,34 @@ def on_page(canvas, doc):
     canvas.setFillColor(ACCENT_BLUE)
     canvas.setFont('Helvetica-Bold', 9)
     canvas.drawRightString(PAGE_W - 18*mm, 4*mm, str(doc.page))
+    canvas.restoreState()
+
+
+A4_L = rl_landscape(A4)
+PAGE_WL, PAGE_HL = A4_L   # landscape: ~841.9 × 595.3 pt
+
+
+def on_page_landscape(canvas, doc):
+    canvas.saveState()
+    canvas.setFillColor(MID_BLUE)
+    canvas.rect(0, PAGE_HL - 14*mm, PAGE_WL, 14*mm, fill=1, stroke=0)
+    canvas.setFillColor(WHITE)
+    canvas.setFont('Helvetica-Bold', 9)
+    canvas.drawString(18*mm, PAGE_HL - 9*mm, 'StorePilot')
+    canvas.setFont('Helvetica', 8)
+    canvas.drawRightString(PAGE_WL - 18*mm, PAGE_HL - 9*mm, 'UML Class Diagram')
+    canvas.setFillColor(LIGHT_GREY)
+    canvas.rect(0, 0, PAGE_WL, 12*mm, fill=1, stroke=0)
+    canvas.setStrokeColor(ACCENT_BLUE)
+    canvas.setLineWidth(1.5)
+    canvas.line(0, 12*mm, PAGE_WL, 12*mm)
+    canvas.setFillColor(MID_GREY)
+    canvas.setFont('Helvetica', 8)
+    canvas.drawString(18*mm, 4*mm, 'Ahmad Hijazy  ·  2025')
+    canvas.drawCentredString(PAGE_WL / 2, 4*mm, 'StorePilot Project Book')
+    canvas.setFillColor(ACCENT_BLUE)
+    canvas.setFont('Helvetica-Bold', 9)
+    canvas.drawRightString(PAGE_WL - 18*mm, 4*mm, str(doc.page))
     canvas.restoreState()
 
 
@@ -578,18 +607,23 @@ def build_project_structure(styles):
 
 
 def build_uml(styles):
-    elems = page_header(9, 'UML Class Diagram', styles,
-                        'Key relationships between entities and architecture layers')
-    elems.append(sp(2))
-    elems.append(body(
-        'The diagram below shows the primary domain classes and their relationships. '
-        'Room @Entity classes map directly to SQLite tables. Repositories bridge DAOs '
-        'to ViewModels. ViewModels expose LiveData to UI fragments/activities.', styles))
-    elems.append(sp(3))
+    # Switch to landscape so the wide UML fills the full page
     img_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'uml_diagram.png')
-    img = Image(img_path, width=PAGE_W - 4*cm, height=(PAGE_W - 4*cm) * 4464/5424)
-    elems.append(img)
-    elems.append(PageBreak())
+    available_w = PAGE_WL - 4*cm           # landscape width minus margins ≈ 25.7 cm
+    available_h = PAGE_HL - 4*cm - 14*mm - 12*mm  # minus header+footer bars
+    img_aspect = 5424 / 4464               # width / height of the UML PNG
+    # Fit to available area keeping aspect ratio
+    if available_w / img_aspect <= available_h:
+        iw, ih = available_w, available_w / img_aspect
+    else:
+        ih, iw = available_h, available_h * img_aspect
+    elems = [
+        NextPageTemplate('landscape'),
+        PageBreak(),
+        Image(img_path, width=iw, height=ih),
+        NextPageTemplate('portrait'),
+        PageBreak(),
+    ]
     return elems
 
 
@@ -1510,9 +1544,26 @@ def build_conclusion(styles):
 def generate():
     output_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                                'StorePilot_Project_Book.pdf')
-    doc = SimpleDocTemplate(
+    # Portrait frame (used for all regular pages)
+    portrait_frame = Frame(
+        2*cm, 1.8*cm,
+        PAGE_W - 4*cm, PAGE_H - 3.6*cm,
+        id='normal'
+    )
+    # Landscape frame (used only for the UML page)
+    landscape_frame = Frame(
+        2*cm, 1.8*cm,
+        PAGE_WL - 4*cm, PAGE_HL - 3.6*cm,
+        id='normal'
+    )
+    portrait_tpl  = PageTemplate(id='portrait',  frames=[portrait_frame],
+                                  onPage=on_page,           pagesize=A4)
+    landscape_tpl = PageTemplate(id='landscape', frames=[landscape_frame],
+                                  onPage=on_page_landscape, pagesize=A4_L)
+
+    doc = BaseDocTemplate(
         output_path,
-        pagesize=A4,
+        pageTemplates=[portrait_tpl, landscape_tpl],
         leftMargin=2*cm, rightMargin=2*cm,
         topMargin=1.8*cm, bottomMargin=1.8*cm,
         title='StorePilot Project Book',
@@ -1541,7 +1592,7 @@ def generate():
     story += build_utilities(styles)       # page 125+
     story += build_conclusion(styles)      # pages 148-156
 
-    doc.build(story, onFirstPage=on_page, onLaterPages=on_page)
+    doc.build(story)
     print(f'Book generated: {output_path}')
     return output_path
 
