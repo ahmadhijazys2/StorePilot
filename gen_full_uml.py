@@ -16,6 +16,7 @@ C_CORE    = '#4A148C'
 C_ACT     = '#37474F'
 C_FRAG    = '#455A64'
 
+C_UI      = '#0288D1'   # Activity/Fragment → ViewModel arrow
 C_BODY    = '#E3F2FD'
 C_DAO_BG  = '#E8EAF6'
 C_REPO_BG = '#FBE9E7'
@@ -68,6 +69,15 @@ def dash_arr(ax, x1, y1, x2, y2, color, lw=0.8):
                                 linestyle='dashed',
                                 connectionstyle='arc3,rad=0',
                                 mutation_scale=7))
+
+
+def ui_link(ax, fx, fy, vx, vy, rad=0.0):
+    """Dotted arrow: Activity/Fragment (bottom) → ViewModel (top)."""
+    ax.annotate('', xy=(vx, vy), xytext=(fx, fy),
+                arrowprops=dict(arrowstyle='->', color=C_UI, lw=0.65,
+                                linestyle='dotted',
+                                connectionstyle=f'arc3,rad={rad}',
+                                mutation_scale=6))
 
 
 def hline(ax, y, color=C_GOLD, lw=1.5, ls='--'):
@@ -687,6 +697,55 @@ def build():
     for (sx, name, attrs) in supp:
         box(ax, sx, SY-SH-0.05, FW2, SH, name, attrs, '#455A64', C_ACT_BG, fs=5.6, ts=7.0)
 
+    # ══════════════════════════════════════════════════════════════════════
+    # 7.  Activity / Fragment → ViewModel  (dotted blue arrows)
+    # ══════════════════════════════════════════════════════════════════════
+    vm_btm = VY - VH          # bottom edge of all ViewModel boxes ≈ 14.00
+
+    # x-centre helpers  (all UI sections share the same column x-positions)
+    def vxc(i): return [0.35,4.05,7.75,11.45,15.15,18.85,22.55,26.25,29.95][i] + VW/2
+    def uxc(i): return [0.35,4.40,8.45,12.50,16.55,20.60,24.65,28.70][i] + AW/2
+
+    # ── Auth Activities  (top y = AY - 0.25) ─────────────────────────────
+    ui_link(ax, uxc(3), AY-0.25, vxc(0), vm_btm, rad= 0.25)  # LoginActivity       → AuthVM
+    ui_link(ax, uxc(4), AY-0.25, vxc(0), vm_btm, rad= 0.30)  # RegisterActivity    → AuthVM
+
+    # ── Customer Fragments  (top y = FY - 0.05) ──────────────────────────
+    ui_link(ax, uxc(1), FY-0.05, vxc(1), vm_btm, rad=-0.05)  # CustomerHomeFrag    → ProductVM
+    ui_link(ax, uxc(1), FY-0.05, vxc(3), vm_btm, rad=-0.15)  # CustomerHomeFrag    → CartVM
+    ui_link(ax, uxc(2), FY-0.05, vxc(1), vm_btm, rad=-0.05)  # ProductDetailFrag   → ProductVM
+    ui_link(ax, uxc(2), FY-0.05, vxc(3), vm_btm, rad= 0.08)  # ProductDetailFrag   → CartVM
+    ui_link(ax, uxc(2), FY-0.05, vxc(4), vm_btm, rad= 0.14)  # ProductDetailFrag   → FavoritesVM
+    ui_link(ax, uxc(3), FY-0.05, vxc(3), vm_btm, rad= 0.05)  # CartFragment        → CartVM
+    ui_link(ax, uxc(4), FY-0.05, vxc(2), vm_btm, rad= 0.15)  # CheckoutFrag        → OrderVM
+    ui_link(ax, uxc(4), FY-0.05, vxc(3), vm_btm, rad= 0.10)  # CheckoutFrag        → CartVM
+    ui_link(ax, uxc(5), FY-0.05, vxc(2), vm_btm, rad= 0.20)  # OrderHistoryFrag    → OrderVM
+    ui_link(ax, uxc(6), FY-0.05, vxc(4), vm_btm, rad= 0.10)  # FavoritesFrag       → FavoritesVM
+    ui_link(ax, uxc(6), FY-0.05, vxc(3), vm_btm, rad= 0.18)  # FavoritesFrag       → CartVM
+    ui_link(ax, uxc(7), FY-0.05, vxc(8), vm_btm, rad= 0.05)  # SupportChatFrag     → SupportVM
+
+    # ── Manager Fragments  (top y = MY - 0.05) ───────────────────────────
+    ui_link(ax, uxc(0), MY-0.05, vxc(5), vm_btm, rad=-0.30)  # DashboardFrag       → SaleVM
+    ui_link(ax, uxc(0), MY-0.05, vxc(1), vm_btm, rad=-0.18)  # DashboardFrag       → ProductVM
+    ui_link(ax, uxc(0), MY-0.05, vxc(2), vm_btm, rad=-0.22)  # DashboardFrag       → OrderVM
+    ui_link(ax, uxc(0), MY-0.05, vxc(6), vm_btm, rad=-0.35)  # DashboardFrag       → TaskVM
+    ui_link(ax, uxc(0), MY-0.05, vxc(7), vm_btm, rad=-0.40)  # DashboardFrag       → SeasonVM
+    ui_link(ax, uxc(1), MY-0.05, vxc(1), vm_btm, rad=-0.10)  # ProductListFrag     → ProductVM
+    ui_link(ax, uxc(2), MY-0.05, vxc(1), vm_btm, rad=-0.08)  # ProductDetailsFrag  → ProductVM
+    ui_link(ax, uxc(3), MY-0.05, vxc(1), vm_btm, rad=-0.05)  # AddEditProductAct   → ProductVM
+    ui_link(ax, uxc(4), MY-0.05, vxc(2), vm_btm, rad= 0.25)  # OrderMgmtFrag       → OrderVM
+    ui_link(ax, uxc(5), MY-0.05, vxc(6), vm_btm, rad=-0.05)  # TaskListFrag        → TaskVM
+    ui_link(ax, uxc(6), MY-0.05, vxc(5), vm_btm, rad= 0.05)  # SalesHistoryFrag    → SaleVM
+    ui_link(ax, uxc(7), MY-0.05, vxc(7), vm_btm, rad= 0.05)  # SeasonListFrag      → SeasonVM
+
+    # ── Support / Admin  (top y = SY - 0.05) ─────────────────────────────
+    ui_link(ax, uxc(0), SY-0.05, vxc(8), vm_btm, rad=-0.38)  # SupportConvsFrag    → SupportVM
+    ui_link(ax, uxc(1), SY-0.05, vxc(8), vm_btm, rad=-0.33)  # SupportInboxFrag    → SupportVM
+    ui_link(ax, uxc(3), SY-0.05, vxc(6), vm_btm, rad=-0.10)  # AddEditTaskAct      → TaskVM
+    ui_link(ax, uxc(4), SY-0.05, vxc(5), vm_btm, rad=-0.05)  # AddSaleAct          → SaleVM
+    ui_link(ax, uxc(4), SY-0.05, vxc(1), vm_btm, rad=-0.12)  # AddSaleAct          → ProductVM
+    ui_link(ax, uxc(5), SY-0.05, vxc(7), vm_btm, rad= 0.05)  # AddEditSeasonAct    → SeasonVM
+
     # ── Legend (top-right) ────────────────────────────────────────────────
     lx, ly = FW - 4.8, FH - 1.55
     ax.text(lx, ly, 'Colour Legend', fontsize=9, fontweight='bold', color=C_DARK)
@@ -708,13 +767,14 @@ def build():
 
     ax.text(lx, ly - 0.44*7 - 0.15, 'Arrow Legend', fontsize=9, fontweight='bold', color=C_DARK)
     algs = [
-        (C_ENTITY, '──▶  Entity FK (1:N)'),
-        (C_REPO,   '- - ▶  Repo uses DAO'),
-        (C_VM,     '──▶  ViewModel → Repo'),
+        (C_ENTITY, '-',       '──▶  Entity FK (1:N)'),
+        (C_REPO,   'dashed',  '- - ▶  Repo uses DAO'),
+        (C_VM,     '-',       '──▶  ViewModel → Repo'),
+        (C_UI,     'dotted',  '·····▶  Activity/Fragment uses ViewModel'),
     ]
-    for i, (c, lbl) in enumerate(algs):
+    for i, (c, ls, lbl) in enumerate(algs):
         ay0 = ly - 0.44*7 - 0.50 - 0.35*i
-        ax.plot([lx, lx+0.55], [ay0, ay0], color=c, lw=1.5)
+        ax.plot([lx, lx+0.55], [ay0, ay0], color=c, lw=1.5, linestyle=ls)
         ax.annotate('', xy=(lx+0.57, ay0), xytext=(lx+0.53, ay0),
                     arrowprops=dict(arrowstyle='->', color=c, lw=1.2, mutation_scale=8))
         ax.text(lx + 0.72, ay0, lbl[5:], fontsize=7, va='center', color=c)
