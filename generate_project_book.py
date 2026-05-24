@@ -11,7 +11,7 @@ from reportlab.lib.units import cm, mm
 from reportlab.lib import colors
 from reportlab.platypus import (
     SimpleDocTemplate, Paragraph, Spacer, PageBreak,
-    Table, TableStyle, KeepTogether, HRFlowable
+    Table, TableStyle, KeepTogether, HRFlowable, Image
 )
 from reportlab.lib.enums import TA_LEFT, TA_CENTER, TA_RIGHT, TA_JUSTIFY
 from reportlab.pdfgen import canvas as pdfcanvas
@@ -532,59 +532,9 @@ def build_uml(styles):
         'Room @Entity classes map directly to SQLite tables. Repositories bridge DAOs '
         'to ViewModels. ViewModels expose LiveData to UI fragments/activities.', styles))
     elems.append(sp(3))
-    uml = (
-        "┌──────────────── ENTITIES (Room @Entity) ─────────────────────────────────────┐\n"
-        "│                                                                               │\n"
-        "│  ┌──────────┐      ┌──────────────┐      ┌──────────────┐                   │\n"
-        "│  │  User    │─1:N──│   Order      │─1:N──│  OrderItem   │                   │\n"
-        "│  │──────────│      │──────────────│      │──────────────│                   │\n"
-        "│  │id (PK)   │      │id (PK)       │      │id (PK)       │                   │\n"
-        "│  │fullName  │      │customerId(FK)│      │orderId (FK)  │                   │\n"
-        "│  │username* │      │totalPrice    │      │productId(FK) │                   │\n"
-        "│  │email*    │      │status        │      │quantity      │                   │\n"
-        "│  │role      │      │paymentMethod │      │unitPrice     │                   │\n"
-        "│  │passHash  │      │shippingAddr  │      └──────────────┘                   │\n"
-        "│  └──────────┘      └──────────────┘                                         │\n"
-        "│       │                                                                      │\n"
-        "│       ├─1:N─▶ CartItem (customerId, productId, quantity)                    │\n"
-        "│       ├─1:N─▶ Favorite (customerId, productId, addedAt)                    │\n"
-        "│       ├─1:N─▶ SupportMessage (senderId, senderRole, messageText, customerId)│\n"
-        "│       └─1:N─▶ Task (assignedTo, createdBy, status, priority, isPrivate)     │\n"
-        "│                                                                              │\n"
-        "│  ┌──────────┐  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐       │\n"
-        "│  │ Product  │  │   Sale       │  │  Purchase    │  │   Season     │       │\n"
-        "│  │──────────│  │──────────────│  │──────────────│  │──────────────│       │\n"
-        "│  │id (PK)   │  │productId(FK) │  │productId(FK) │  │id / name     │       │\n"
-        "│  │name      │  │soldBy (FK)   │  │purchasedBy   │  │startDate     │       │\n"
-        "│  │category  │  │quantity      │  │supplier      │  │endDate       │       │\n"
-        "│  │price     │  │totalPrice    │  │totalCost     │  │alertDays     │       │\n"
-        "│  │quantity  │  └──────────────┘  └──────────────┘  │isActive      │       │\n"
-        "│  └──────────┘                                       └──────────────┘       │\n"
-        "└──────────────────────────────────────────────────────────────────────────────┘\n"
-        "\n"
-        "┌──────────────── MVVM ARCHITECTURE LAYERS ────────────────────────────────────┐\n"
-        "│  UI (Fragment / Activity)  ←observes LiveData / calls methods→              │\n"
-        "│        ↕                                                                      │\n"
-        "│  ViewModel  (lifecycle-aware, survives rotation)                              │\n"
-        "│        ↕  calls repository methods                                            │\n"
-        "│  Repository  (runs on AppDatabase.dbExecutor — 4-thread pool)                │\n"
-        "│        ↕  uses DAO                                                            │\n"
-        "│  DAO  (Room @Dao interface, SQL annotations)                                  │\n"
-        "│        ↕                                                                      │\n"
-        "│  Room Database  ──────▶  SQLite file  storepilot.db                          │\n"
-        "└──────────────────────────────────────────────────────────────────────────────┘"
-    )
-    data = [[Paragraph(uml.replace('\n', '<br/>').replace(' ', '&nbsp;'), styles['code_style'])]]
-    t = Table(data, colWidths=[PAGE_W - 4*cm])
-    t.setStyle(TableStyle([
-        ('BACKGROUND',    (0,0), (-1,-1), LIGHT_BLUE),
-        ('TOPPADDING',    (0,0), (-1,-1), 8),
-        ('BOTTOMPADDING', (0,0), (-1,-1), 8),
-        ('LEFTPADDING',   (0,0), (-1,-1), 8),
-        ('RIGHTPADDING',  (0,0), (-1,-1), 8),
-        ('BOX',           (0,0), (-1,-1), 1, ACCENT_BLUE),
-    ]))
-    elems.append(t)
+    img_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'uml_diagram.png')
+    img = Image(img_path, width=PAGE_W - 4*cm, height=(PAGE_W - 4*cm) * 11/16)
+    elems.append(img)
     elems.append(PageBreak())
     return elems
 
@@ -592,53 +542,9 @@ def build_uml(styles):
 def build_nav_flow(styles):
     elems = page_header(10, 'Navigation Flow Diagram', styles)
     elems.append(sp(2))
-    nav = (
-        "    ┌──────────────────────────────────────────────────────────────┐\n"
-        "    │         App Launch  (StorePilotApp.onCreate)                 │\n"
-        "    │     Firebase init + NotificationChannel + AlarmManager       │\n"
-        "    └──────────────────────┬───────────────────────────────────────┘\n"
-        "                           │\n"
-        "                   ┌───────▼────────┐\n"
-        "                   │ WelcomeActivity │   already logged in?\n"
-        "                   └──┬──────────┬──┘\n"
-        "            YES ◄─────┘          └──── NO\n"
-        "             │                           │\n"
-        "    ┌────────▼────────┐        ┌─────────▼─────────────────┐\n"
-        "    │ role==CUSTOMER  │        │  Login / Register          │\n"
-        "    └──┬──────────────┘        │  ← RoleSelectionActivity   │\n"
-        "       │                       │  First run → SetupActivity  │\n"
-        "       │                       └──┬────────────────────────┘\n"
-        "       │                          │  login success\n"
-        "       │                    ┌─────▼──────────────────────────┐\n"
-        "       │                    │  role check                     │\n"
-        "       │                    │  CUSTOMER → CustomerMain        │\n"
-        "       │                    │  STAFF    → MainActivity        │\n"
-        "       │                    └──┬─────────────────────────────┘\n"
-        "       │                       │\n"
-        "┌──────▼──────────────┐  ┌─────▼──────────────────────────────────┐\n"
-        "│ CustomerMainActivity│  │  MainActivity  (Staff / Manager)        │\n"
-        "│  bottom nav tabs:   │  │  bottom nav tabs:                       │\n"
-        "│  Home (browse)      │  │  Dashboard (KPI cards)                  │\n"
-        "│  Cart               │  │  Inventory (ProductListFragment)        │\n"
-        "│  Orders             │  │  Sales History                         │\n"
-        "│  Favourites         │  │  Task List (tabs: My/Team/Private)      │\n"
-        "│  Support Chat       │  │  More menu:                             │\n"
-        "└─────────────────────┘  │    Purchases / Seasons / Orders         │\n"
-        "                         │    Support Inbox / User Management      │\n"
-        "                         │    Test Notification / Logout           │\n"
-        "                         └────────────────────────────────────────┘"
-    )
-    data = [[Paragraph(nav.replace('\n', '<br/>').replace(' ', '&nbsp;'), styles['code_style'])]]
-    t = Table(data, colWidths=[PAGE_W - 4*cm])
-    t.setStyle(TableStyle([
-        ('BACKGROUND',    (0,0), (-1,-1), LIGHT_BLUE),
-        ('TOPPADDING',    (0,0), (-1,-1), 8),
-        ('BOTTOMPADDING', (0,0), (-1,-1), 8),
-        ('LEFTPADDING',   (0,0), (-1,-1), 8),
-        ('RIGHTPADDING',  (0,0), (-1,-1), 8),
-        ('BOX',           (0,0), (-1,-1), 1, ACCENT_BLUE),
-    ]))
-    elems.append(t)
+    img_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'nav_flow_diagram.png')
+    img = Image(img_path, width=PAGE_W - 4*cm, height=(PAGE_W - 4*cm) * 14/16)
+    elems.append(img)
     elems.append(PageBreak())
     return elems
 
