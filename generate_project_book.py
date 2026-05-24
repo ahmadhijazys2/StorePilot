@@ -533,7 +533,7 @@ def build_uml(styles):
         'to ViewModels. ViewModels expose LiveData to UI fragments/activities.', styles))
     elems.append(sp(3))
     img_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'uml_diagram.png')
-    img = Image(img_path, width=PAGE_W - 4*cm, height=(PAGE_W - 4*cm) * 11/16)
+    img = Image(img_path, width=PAGE_W - 4*cm, height=(PAGE_W - 4*cm) * 1024/1536)
     elems.append(img)
     elems.append(PageBreak())
     return elems
