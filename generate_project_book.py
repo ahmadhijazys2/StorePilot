@@ -596,18 +596,89 @@ def build_db_schema(styles):
 
 
 # ── App Screens ────────────────────────────────────────────────────────────────
-def build_screen(pg, title, class_name, desc_list, fields, actions, styles):
+SCREENS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'screens')
+
+def _screen_img(filename, height_cm=9.5):
+    path = os.path.join(SCREENS_DIR, filename)
+    if not os.path.exists(path):
+        return None
+    h = height_cm * cm
+    # maintain 393:720 aspect
+    w = h * 393 / 720
+    return Image(path, width=w, height=h)
+
+
+def build_screen(pg, title, class_name, desc_list, fields, actions, styles,
+                 screenshot=None, extra_screenshots=None):
     elems = page_header(pg, title, styles, f'Class: {class_name}')
     elems.append(sp(2))
+
+    img_objs = []
+    if screenshot:
+        im = _screen_img(screenshot)
+        if im:
+            img_objs.append(im)
+    if extra_screenshots:
+        for s in extra_screenshots:
+            im = _screen_img(s)
+            if im:
+                img_objs.append(im)
+
+    # Build text column content
+    text_col = []
     for p in desc_list:
-        elems.append(body(p, styles, True))
-        elems.append(sp(1))
+        text_col.append(Paragraph(p, styles['body_justify']))
+        text_col.append(Spacer(1, 3*mm))
     if fields:
-        elems += [sp(2), sub('UI Components', styles)]
-        elems += bullet_list(fields, styles)
+        text_col.append(Spacer(1, 4*mm))
+        text_col.append(Paragraph('UI Components', styles['page_subtitle']))
+        text_col += [Paragraph(f'• {f}', styles['bullet']) for f in fields]
     if actions:
-        elems += [sp(2), sub('User Actions', styles)]
-        elems += bullet_list(actions, styles)
+        text_col.append(Spacer(1, 4*mm))
+        text_col.append(Paragraph('User Actions', styles['page_subtitle']))
+        text_col += [Paragraph(f'• {a}', styles['bullet']) for a in actions]
+
+    if img_objs:
+        # All screenshots stacked vertically in left column; text in right column
+        img_w = img_objs[0].drawWidth   # all screenshots same width
+        text_w = PAGE_W - 4*cm - img_w - 8*mm
+
+        if len(img_objs) == 1:
+            img_cell_rows = [[img_objs[0]]]
+        else:
+            img_cell_rows = [[im] for im in img_objs]
+
+        img_inner = Table(img_cell_rows, colWidths=[img_w])
+        img_inner.setStyle(TableStyle([
+            ('VALIGN',        (0,0), (-1,-1), 'TOP'),
+            ('TOPPADDING',    (0,0), (-1,-1), 0),
+            ('BOTTOMPADDING', (0,0), (-1,-1), 4),
+            ('LEFTPADDING',   (0,0), (-1,-1), 0),
+            ('RIGHTPADDING',  (0,0), (-1,-1), 0),
+        ]))
+
+        txt_inner = Table([[t] for t in text_col], colWidths=[text_w])
+        txt_inner.setStyle(TableStyle([
+            ('VALIGN',        (0,0), (-1,-1), 'TOP'),
+            ('TOPPADDING',    (0,0), (-1,-1), 0),
+            ('BOTTOMPADDING', (0,0), (-1,-1), 2),
+            ('LEFTPADDING',   (0,0), (-1,-1), 0),
+            ('RIGHTPADDING',  (0,0), (-1,-1), 0),
+        ]))
+
+        layout = Table([[img_inner, Spacer(8*mm, 1), txt_inner]],
+                       colWidths=[img_w, 8*mm, text_w])
+        layout.setStyle(TableStyle([
+            ('VALIGN',        (0,0), (-1,-1), 'TOP'),
+            ('TOPPADDING',    (0,0), (-1,-1), 0),
+            ('BOTTOMPADDING', (0,0), (-1,-1), 0),
+            ('LEFTPADDING',   (0,0), (-1,-1), 0),
+            ('RIGHTPADDING',  (0,0), (-1,-1), 0),
+        ]))
+        elems.append(layout)
+    else:
+        elems += text_col
+
     elems.append(PageBreak())
     return elems
 
@@ -621,159 +692,207 @@ def build_app_screens(styles):
          'correct interface based on their role without showing this screen.',
          'New users can either log in with an existing account or choose a role '
          '(Customer or Owner) before registering.'],
-        ['StorePilot logo and tagline',
-         'Login button — navigates to LoginActivity',
-         'Register button — navigates to RoleSelectionActivity',
+        ['StorePilot logo (teal circle) and tagline',
+         'SIGN IN button — navigates to LoginActivity',
+         'SIGN UP button — navigates to RoleSelectionActivity',
          'Auto-skip if session is active (navigateByRole())'],
-        ['Tap Login → LoginActivity',
-         'Tap Register → RoleSelectionActivity → RegisterActivity',
+        ['Tap SIGN IN → LoginActivity',
+         'Tap SIGN UP → RoleSelectionActivity → RegisterActivity',
          'Already logged in → CustomerMainActivity or MainActivity (automatic)'],
-        styles)
+        styles, screenshot='screen_welcome.png')
 
-    elems += build_screen(14, 'Login Screen', 'LoginActivity',
+    elems += build_screen(14, 'Role Selection Screen', 'RoleSelectionActivity',
+        ['Shown after tapping SIGN UP on the Welcome screen. The user picks whether '
+         'they are signing up as an Owner (staff account) or a Customer.',
+         'The selected role is passed to RegisterActivity so the "Signing up as:" '
+         'label is pre-filled and the role field is locked.'],
+        ['"I am signing up as..." title',
+         'OWNER button — staff / manager account',
+         'CUSTOMER button — shopping account'],
+        ['Tap OWNER → RegisterActivity with role=OWNER',
+         'Tap CUSTOMER → RegisterActivity with role=CUSTOMER'],
+        styles, screenshot='screen_role_selection.png')
+
+    elems += build_screen(15, 'Login Screen', 'LoginActivity',
         ['The login screen accepts a username or email address with a password. '
          'Credentials are validated locally using PBKDF2/SHA-256 hash comparison.',
          'On the very first install with no users, the app redirects to SetupActivity. '
          'After success the user is routed based on role.'],
-        ['Username/Email EditText',
+        ['StorePilot logo (teal circle) + "Welcome back!" label',
+         'Email / Username EditText (outlined, floating label)',
          'Password EditText (textPassword input type)',
-         'Login Button — triggers AuthViewModel.login()',
-         'Register link — navigates to RegisterActivity',
-         'Forgot password link — shows store admin toast'],
-        ['Enter credentials + tap Login',
+         'LOGIN Button — triggers AuthViewModel.login()'],
+        ['Enter credentials + tap LOGIN',
          'Empty fields → Toast error',
          'Wrong credentials → loginError LiveData → Toast',
          'Success → role-based navigation'],
-        styles)
+        styles, screenshot='screen_login.png')
 
-    elems += build_screen(15, 'Sign-Up / Registration Screen', 'RegisterActivity',
+    elems += build_screen(16, 'Sign-Up / Registration Screen', 'RegisterActivity',
         ['Collects full name, username, email, phone, password and role. '
-         'The role can be pre-selected (from RoleSelectionActivity) or chosen via a spinner.',
+         'The role is pre-set from RoleSelectionActivity ("Signing up as: Customer" or "Owner").',
          'A PBKDF2 salt+hash is computed on a background thread. Firebase Auth sign-up '
          'is attempted optionally (gracefully ignored on failure).'],
-        ['Full Name, Username, Email, Phone EditTexts',
-         'Password & Confirm Password EditTexts',
-         'Role Spinner (if no pre-selection) or role label',
-         'Register Button', 'Login link'],
-        ['Fill all required fields + tap Register',
+        ['Full Name, Username, Email Address, Phone Number (optional)',
+         'Password EditText with visibility toggle (eye icon)',
+         'Confirm Password EditText',
+         '"Signing up as: <role>" label',
+         'CREATE ACCOUNT button'],
+        ['Fill all required fields + tap CREATE ACCOUNT',
          'Password < 6 chars → error toast',
          'Passwords mismatch → error toast',
          'Duplicate username/email → "already taken" toast',
          'Success → LoginActivity'],
-        styles)
+        styles,
+        screenshot='screen_register_customer.png',
+        extra_screenshots=['screen_register_owner.png'])
 
-    elems += build_screen(16, 'Products (Customer) — Home Screen', 'CustomerHomeFragment',
+    elems += build_screen(17, 'Products (Customer) — Home Screen', 'CustomerHomeFragment',
         ['Shows all products in a 2-column grid with a live search bar that filters '
          'by name or category as the user types.',
          'Each card shows name, category, price, and stock status. The Add to Cart '
          'button is disabled for out-of-stock items.'],
         ['Personalised greeting (Hello, {name})',
-         'Search EditText with TextWatcher',
+         'Search bar with TextWatcher for live filtering',
          'RecyclerView with GridLayoutManager (2 columns)',
          'Product cards: name, category, price, In Stock / Out of Stock badge',
          'Empty state TextView'],
         ['Type in search → live filtering',
          'Tap product card → ProductDetailFragment',
-         'Tap Add to Cart → CartViewModel.addToCart()'],
-        styles)
+         'Tap "+ Cart" → CartViewModel.addToCart()'],
+        styles, screenshot='screen_customer_home.png')
 
-    elems += build_screen(17, 'Cart Screen', 'CartFragment',
+    elems += build_screen(18, 'Cart Screen', 'CartFragment',
         ['Lists all items the customer has added. Each row shows product name, '
          'unit price, subtotal and quantity controls (+/−/remove).',
          'The Checkout button is disabled when the cart is empty.'],
         ['RecyclerView with CartItemAdapter',
-         'Each row: name, unit price, +/−/trash buttons, subtotal',
-         'Total price TextView',
-         'Checkout Button (disabled when empty)',
-         'Empty cart state TextView'],
+         'Each row: product image placeholder, name, unit price, +/−/trash buttons, subtotal',
+         'Total price row at the bottom',
+         'CHECKOUT Button (disabled when empty)'],
         ['Tap + → increase quantity',
          'Tap − → decrease or remove if last unit',
          'Tap trash → remove item entirely',
-         'Tap Checkout → CheckoutFragment'],
-        styles)
+         'Tap CHECKOUT → CheckoutFragment'],
+        styles, screenshot='screen_cart.png')
 
-    elems += build_screen(18, 'Support Chat Screen', 'SupportChatFragment',
-        ['A WhatsApp-style support chat. Sent messages appear on the right (blue); '
-         'received messages appear on the left (grey). Two XML layouts are used: '
-         'item_message_sent and item_message_received.',
+    elems += build_screen(19, 'Checkout Screen', 'CheckoutFragment',
+        ['Collects a shipping address and payment method before placing the order. '
+         'The cart is validated (non-empty, address filled) before the order is created.',
+         'On success, the cart is cleared and the user is sent to OrderConfirmationFragment.'],
+        ['Shipping address EditText (multiline)',
+         'Payment method radio group: Cash on Delivery / PayPal / Credit Card',
+         'Order summary card showing item count and total',
+         'PLACE ORDER button (disabled after tap to prevent double-submit)'],
+        ['Enter address + pick payment + tap PLACE ORDER',
+         'Empty address → Toast error',
+         'Empty cart → Toast error',
+         'Success → OrderConfirmationFragment, cart cleared'],
+        styles, screenshot='screen_checkout.png')
+
+    elems += build_screen(20, 'Support Chat Screen', 'SupportChatFragment',
+        ['A WhatsApp-style support chat. Sent messages appear on the right (dark); '
+         'received messages appear on the left (light blue). Two XML item layouts are used.',
          'All messages are persisted in the support_messages table and marked as '
          'read when the chat is opened.'],
         ['RecyclerView with LinearLayoutManager (stackFromEnd=true)',
          'MessageAdapter — dual view type (sent / received)',
-         'Message EditText + Send ImageButton',
-         'Timestamp per message',
-         'Empty state TextView'],
+         'Message EditText + Send button (teal)',
+         'Timestamp per message bubble'],
         ['Type message + tap Send → SupportViewModel.sendMessage()',
          'Messages load via LiveData and auto-scroll to latest',
          'All messages marked read on open'],
-        styles)
+        styles, screenshot='screen_support_chat.png')
 
-    elems += build_screen(19, 'Task Management Screen', 'TaskListFragment',
+    elems += build_screen(21, 'Task Management Screen', 'TaskListFragment',
         ['Shows work items in three tabs: My Tasks / Team / Private. '
          'Uses switchMap to avoid stacking multiple LiveData observers on tab change.',
-         'Each task card shows title, status (TODO/IN_PROGRESS/DONE), '
-         'priority (LOW/MEDIUM/HIGH), and due date.'],
-        ['TabLayout with three tabs',
+         'Each task card shows title, status chip (TODO/IN_PROGRESS/DONE) and '
+         'priority chip (LOW/MEDIUM/HIGH).'],
+        ['TabLayout with three tabs (My Tasks · Team · Private)',
          'RecyclerView with TaskAdapter',
-         'Each row: title, status chip, priority chip, due date',
-         'FloatingActionButton — add new task'],
+         'Each row: title, colour-coded status chip, priority chip',
+         'FloatingActionButton (+) — add new task'],
         ['Tap tab → switches list via switchMap LiveData',
          'Tap FAB → AddEditTaskActivity',
          'Tasks auto-refresh via LiveData'],
-        styles)
+        styles, screenshot='screen_task_list.png')
 
-    elems += build_screen(20, 'Products (Manager) — Inventory Screen', 'ProductListFragment',
+    elems += build_screen(22, 'Products (Manager) — Inventory Screen', 'ProductListFragment',
         ['Shows all products in a vertical list with name, category, stock quantity and price. '
-         'The FAB (+) is hidden from roles without MANAGE_PRODUCTS permission.'],
+         'Low-stock items show a red quantity badge. The FAB (+) is hidden from roles '
+         'without MANAGE_PRODUCTS permission.'],
         ['RecyclerView with ProductListAdapter',
-         'Each row: product name, category, quantity, price',
-         'FAB — add product (OWNER/STORE_MANAGER only)'],
+         'Each row: product image placeholder, name, category, colour-coded stock badge, price',
+         'FAB (+) — add product (OWNER/STORE_MANAGER only)'],
         ['Tap product row → ProductDetailsFragment (full details + edit/delete)',
          'Tap FAB → AddEditProductActivity'],
-        styles)
+        styles, screenshot='screen_product_list.png')
 
-    elems += build_screen(21, 'Manager Orders Screen', 'OrderManagementFragment',
-        ['Lists all customer orders. Each card shows order ID, customer ID, date, '
-         'total, payment method, status (colour-coded) and a spinner to change status.',
+    elems += build_screen(23, 'Manager Orders Screen', 'OrderManagementFragment',
+        ['Lists all customer orders. Each card shows order ID, customer ID, total, '
+         'a colour-coded status badge and a "Change ▾" spinner to update the status.',
          'Managers can move orders through PENDING → PROCESSING → SHIPPED → DELIVERED '
          'or mark CANCELLED.'],
         ['RecyclerView with ManagerOrderAdapter',
-         'Each row: order ID, customer ID, date, total, payment, status TextView',
-         'Status Spinner with 5 options',
+         'Each row: order ID, customer ID, total, colour-coded status badge',
+         '"Change ▾" status spinner — 5 options',
          'Empty state TextView'],
         ['Spinner change → OrderViewModel.updateOrderStatus()',
-         'Colours: PENDING=orange, PROCESSING=blue, SHIPPED=purple, '
-         'DELIVERED=green, CANCELLED=red'],
-        styles)
+         'PENDING=orange · PROCESSING=blue · SHIPPED=purple · DELIVERED=green · CANCELLED=red'],
+        styles, screenshot='screen_manager_orders.png')
 
-    elems += build_screen(22, 'Manager Panel / Dashboard', 'DashboardFragment',
+    elems += build_screen(24, 'Manager Panel / Dashboard', 'DashboardFragment',
         ['Default landing screen for all staff roles. Shows four live KPI cards '
-         'that auto-update via LiveData: Today\'s Sales, Low Stock Count, '
-         'Pending Tasks, and Today\'s Order Count.',
-         'A season alert card appears when any active season ends within 30 days.'],
-        ['Season Alert Card (conditional visibility)',
-         'Today\'s Sales total (US currency formatted)',
-         'Low Stock Count (threshold = 10)',
+         'that auto-update via LiveData: Today\'s Sales, Low Stock Items, '
+         'Pending Tasks, and Today\'s Orders.',
+         'A season alert card (orange border) appears when any active season ends within 30 days.'],
+        ['Season Alert Card (conditional — orange border)',
+         'Today\'s Sales total (formatted as currency)',
+         'Low Stock Items count (threshold = 10)',
          'Pending Tasks count',
-         'Today\'s Order Count'],
+         'Today\'s Orders count'],
         ['All cards refresh automatically via multiple LiveData observers',
          'Season alert hidden when no season is ending soon'],
-        styles)
+        styles, screenshot='screen_dashboard.png')
 
-    elems += build_screen(23, 'Notifications', 'NotificationHelper + LowStockReceiver',
+    elems += build_screen(25, 'Notifications', 'NotificationHelper + LowStockReceiver',
         ['StorePilot uses NotificationManager to alert staff when stock is low. '
          'The channel storepilot_low_stock is created at startup with IMPORTANCE_HIGH.',
          'An AlarmManager repeating alarm fires every 1 hour, triggering '
-         'LowStockReceiver to query Firestore for products with quantity ≤ 5. '
-         'On Android 13+ the POST_NOTIFICATIONS runtime permission is requested at login.'],
+         'LowStockReceiver to query Firestore for products with quantity ≤ 5.'],
         ['Channel ID: storepilot_low_stock',
          'Importance: IMPORTANCE_HIGH (vibration enabled)',
          'Threshold: 5 units',
          'Schedule: setInexactRepeating — 1-hour interval'],
         ['Alarm fires → query Firestore → notify if count > 0',
          'Tap More → Test Notification → immediate manual test',
-         'Android 13+ → runtime permission prompt'],
-        styles)
+         'Android 13+ → POST_NOTIFICATIONS runtime permission prompt'],
+        styles, screenshot='screen_notifications.png')
+
+    elems += build_screen(26, 'Order History (Customer)', 'OrderHistoryFragment',
+        ['Shows the logged-in customer\'s past orders in reverse-chronological order. '
+         'Each card shows order ID, item count, total and a colour-coded status badge.',
+         'Tapping a card could be extended to show full order details (not yet implemented).'],
+        ['RecyclerView with CustomerOrderAdapter',
+         'Each row: order ID, item count, total, colour-coded status badge',
+         'Empty state TextView when no orders exist'],
+        ['LiveData observer refreshes list automatically',
+         'Status colours: PENDING=orange · DELIVERED=green'],
+        styles, screenshot='screen_order_history.png')
+
+    elems += build_screen(27, 'Favourites Screen', 'FavoritesFragment',
+        ['Shows products the customer has heart-marked. Each card shows the product '
+         'image placeholder, name, price, stock badge and a filled heart icon.',
+         'Tapping the heart removes the item from favourites. The Add to Cart button '
+         'is also available inline.'],
+        ['RecyclerView with FavoritesAdapter (vertical list)',
+         'Each row: image, name, price, stock badge, heart icon, "+ Cart" button',
+         'Empty state when no favourites'],
+        ['Tap heart → FavoritesViewModel.removeFavorite()',
+         'Tap "+ Cart" → CartViewModel.addToCart()',
+         'List auto-refreshes via LiveData'],
+        styles, screenshot='screen_favorites.png')
 
     return elems
 
