@@ -15,6 +15,12 @@ from reportlab.platypus import (
 )
 from reportlab.lib.enums import TA_LEFT, TA_CENTER, TA_RIGHT, TA_JUSTIFY
 from reportlab.pdfgen import canvas as pdfcanvas
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
+from bidi.algorithm import get_display
+
+pdfmetrics.registerFont(TTFont('DejaVuSans',      '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf'))
+pdfmetrics.registerFont(TTFont('DejaVuSans-Bold', '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf'))
 
 # ── Colour palette ─────────────────────────────────────────────────────────────
 DARK_BLUE   = colors.HexColor('#0D1B2A')
@@ -237,22 +243,26 @@ def sp(h=6):
 # CONTENT BUILDERS
 # ═══════════════════════════════════════════════════════════════════════════════
 
+def _heb(text):
+    """Return visually-ordered Hebrew string for ReportLab (bidi reorder)."""
+    return get_display(text)
+
+
 def build_cover(styles):
+    # ── title block ──────────────────────────────────────────────────────────
     elems = [
-        Spacer(1, 55*mm),
+        Spacer(1, 40*mm),
         Paragraph('StorePilot', styles['cover_title']),
         Spacer(1, 4*mm),
         Paragraph('Android Store Management App', styles['cover_sub']),
         Spacer(1, 8*mm),
         HRFlowable(width='60%', thickness=2, color=ACCENT_GOLD, hAlign='CENTER', spaceAfter=8),
-        Spacer(1, 8*mm),
+        Spacer(1, 6*mm),
         Paragraph('Project Documentation Book', styles['cover_info']),
-        Spacer(1, 4*mm),
-        Paragraph('Ahmad Hijazy', styles['cover_info']),
-        Spacer(1, 4*mm),
-        Paragraph('2025', styles['cover_info']),
-        Spacer(1, 20*mm),
+        Spacer(1, 14*mm),
     ]
+
+    # ── tech badges ──────────────────────────────────────────────────────────
     bs = ParagraphStyle('B2', fontName='Helvetica-Bold', fontSize=10,
                         textColor=WHITE, alignment=TA_CENTER, leading=14)
     badges = [['Android'], ['Java'], ['Room DB'], ['Firebase'], ['MVVM']]
@@ -268,6 +278,52 @@ def build_cover(styles):
         ('BOX',           (0,0), (-1,-1), 1, ACCENT_GOLD),
     ]))
     elems.append(bt)
+    elems.append(Spacer(1, 18*mm))
+
+    # ── student info table (bilingual) ───────────────────────────────────────
+    en_label = ParagraphStyle('EL', fontName='Helvetica-Bold', fontSize=10,
+                              textColor=DARK_GREY, alignment=TA_LEFT, leading=14)
+    en_val   = ParagraphStyle('EV', fontName='Helvetica',      fontSize=10,
+                              textColor=DARK_GREY, alignment=TA_LEFT, leading=14)
+    he_label = ParagraphStyle('HL', fontName='DejaVuSans-Bold', fontSize=10,
+                              textColor=DARK_GREY, alignment=TA_RIGHT, leading=14)
+    he_val   = ParagraphStyle('HV', fontName='DejaVuSans',      fontSize=10,
+                              textColor=DARK_GREY, alignment=TA_RIGHT, leading=14)
+
+    rows = [
+        ('Student',    'Ahmad Ashraf Hijazy',            _heb('תלמיד'),   _heb('אחמד אשרף חיגאזי')),
+        ('ID',         '331453498',                      _heb('ת.ז.'),    '331453498'),
+        ('School',     'Al-Bayan School, Tamra',         _heb('בית ספר'), _heb('אל-באיאן, טמרה')),
+        ('Supervisor', 'Mr. Iyad Marieh',                _heb('מנחה'),    _heb('מר איאד מריח')),
+        ('Track',      'Software Engineering',           _heb('מסלול'),   '126'),
+        ('Major',      'Systems Planning & Programming', _heb('התמחויות'), '-'),
+        ('Date',       'May 24, 2026',                   _heb('תאריך'),   _heb('24 במאי 2026')),
+    ]
+
+    tdata = []
+    for el, ev, hl, hv in rows:
+        tdata.append([
+            Paragraph(el, en_label),
+            Paragraph(ev, en_val),
+            Paragraph(hl, he_label),
+            Paragraph(hv, he_val),
+        ])
+
+    available = PAGE_W - 4*cm   # matches doc left+right margins
+    col_w = [3.2*cm, 6.0*cm, 3.2*cm, 5.0*cm]
+    info_t = Table(tdata, colWidths=col_w, repeatRows=0)
+    info_t.setStyle(TableStyle([
+        ('BACKGROUND',    (0, 0), (-1, -1), WHITE),
+        ('TOPPADDING',    (0, 0), (-1, -1), 8),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
+        ('LEFTPADDING',   (0, 0), (-1, -1), 8),
+        ('RIGHTPADDING',  (0, 0), (-1, -1), 8),
+        ('VALIGN',        (0, 0), (-1, -1), 'MIDDLE'),
+        ('LINEBELOW',     (0, 0), (-1, -1), 0.5, CODE_BORDER),
+        ('BOX',           (0, 0), (-1, -1), 1,   CODE_BORDER),
+        ('BACKGROUND',    (0, 0), (-1,  0), LIGHT_BLUE),
+    ]))
+    elems.append(info_t)
     elems.append(PageBreak())
     return elems
 
